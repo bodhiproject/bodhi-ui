@@ -17,7 +17,6 @@ const styles = (theme) => ({
     },
   },
   overText: {
-    zIndex: 100,
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
@@ -67,7 +66,6 @@ const styles = (theme) => ({
     fontSize: '1.05rem',
     fontWeight: '400',
     fontFamily: 'Noto Sans TC, sans-serif',
-    zIndex: 100,
     whiteSpace: 'nowrap',
   },
   eventOptionInput: {
@@ -84,6 +82,7 @@ const styles = (theme) => ({
     position: 'absolute',
     display: 'flex',
     justifyContent: 'space-between',
+    zIndex: 100,
   },
 });
 
