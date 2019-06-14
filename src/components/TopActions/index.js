@@ -24,9 +24,8 @@ export default class TopActions extends Component {
   };
 
   handleCreateEventClick = () => {
-    const { store: { naka: { loggedIn }, ui: { showNoWalletDialog } }, history } = this.props;
-    if (!loggedIn) showNoWalletDialog();
-    else history.push(Routes.CREATE_EVENT);
+    const { store: { naka: { checkLoginAndPopup } }, history } = this.props;
+    if (checkLoginAndPopup()) history.push(Routes.CREATE_EVENT);
   }
 
   render() {

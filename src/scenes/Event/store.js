@@ -330,8 +330,7 @@ export default class EventStore {
     const { status, centralizedOracle, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.event;
     const { global: { syncBlockTime }, wallet } = this.app;
     const currBlockTime = moment.unix(syncBlockTime);
-    const currentWalletNbot = wallet.currentWalletAddress ? wallet.currentWalletAddress.nbot : 0;
-    const notEnoughNbot = currentWalletNbot < maxTransactionFee;
+    const currentWalletNbot = wallet.currentWalletAddress ? wallet.currentWalletAddress.nbot : -1;
 
     this.buttonDisabled = false;
     this.warningType = '';
@@ -377,29 +376,12 @@ export default class EventStore {
       return;
     }
 
-    // ALL
-    // No wallet can be found
-    if (wallet.addresses.length === 0) {
-      this.buttonDisabled = true;
-      this.error.address = 'str.noAddressInWallet';
-      return;
-    }
-
-    // Trying to set result or vote when not enough NBOT
-    const filteredAddress = filter(wallet.addresses, { address: wallet.currentAddress });
-    const currentNbot = filteredAddress.length > 0 ? filteredAddress[0].nbot : 0; // # of NBOT at currently selected address
-    if ((
-      (status === ARBITRATION && currentNbot < this.amount)
-      || ((status === ORACLE_RESULT_SETTING || status === OPEN_RESULT_SETTING) && currentNbot < consensusThreshold)
-    ) && notEnoughNbot) {
-      this.buttonDisabled = true;
-      this.error.amount = 'str.notEnoughNbot';
-      return;
-    }
-
-    // Trying to bet more naka than you have or you just don't have enough NAKA period
-    if ((status === BETTING && this.amount > currentWalletNbot + maxTransactionFee)
-      || notEnoughNbot) {
+    // Trying to bet, set result or vote when not enough NBOT
+    if (currentWalletNbot >= 0 && (
+      (status === BETTING && this.amount + maxTransactionFee > currentWalletNbot)
+      || (status === ARBITRATION && this.amount + maxTransactionFee > currentWalletNbot)
+      || ((status === ORACLE_RESULT_SETTING || status === OPEN_RESULT_SETTING) && currentWalletNbot < consensusThreshold + maxTransactionFee)
+    )) {
       this.buttonDisabled = true;
       this.error.amount = 'str.notEnoughNbot';
       return;
@@ -454,6 +436,9 @@ export default class EventStore {
   }
 
   bet = async () => {
+    const { naka: { checkLoginAndPopup } } = this.app;
+    if (!checkLoginAndPopup()) return;
+
     await this.app.tx.executeBet({
       eventAddr: this.event.address,
       optionIdx: this.selectedOption.idx,
@@ -464,6 +449,9 @@ export default class EventStore {
   }
 
   set = async () => {
+    const { naka: { checkLoginAndPopup } } = this.app;
+    if (!checkLoginAndPopup()) return;
+
     await this.app.tx.executeSetResult({
       eventAddr: this.event.address,
       optionIdx: this.selectedOption.idx,
@@ -474,6 +462,9 @@ export default class EventStore {
   }
 
   vote = async () => {
+    const { naka: { checkLoginAndPopup } } = this.app;
+    if (!checkLoginAndPopup()) return;
+
     await this.app.tx.executeVote({
       eventAddr: this.event.address,
       optionIdx: this.selectedOption.idx,

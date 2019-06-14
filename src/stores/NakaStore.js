@@ -85,6 +85,16 @@ export default class NakaStore {
   }
 
   @action
+  checkLoginAndPopup = () => {
+    const { ui: { showNoWalletDialog } } = this.app;
+    if (!this.loggedIn) {
+      showNoWalletDialog();
+      return false;
+    }
+    return true;
+  }
+
+  @action
   openPopover = async (messageId) => {
     this.popoverOpen = true;
 

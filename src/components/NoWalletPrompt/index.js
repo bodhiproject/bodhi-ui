@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { Dialog, Typography, Grid, withStyles } from '@material-ui/core';
-import { SentimentVeryDissatisfied } from '@material-ui/icons';
+import { Dialog, Grid, withStyles } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import styles from './styles';
 import { urls } from '../../config/app';
