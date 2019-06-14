@@ -106,7 +106,7 @@ export default class Option extends Component {
                     <Typography variant="h6" className={classes.overText}>
                       {name}
                     </Typography>
-                    <div className={classes.eventOptionProgressNum}>{`${percent}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
+                    <div className={classes.eventOptionProgressNum}>{`${toFixed(percent)}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
                   </div>
                   <Progress
                     color={isBetting ? 'primary' : 'secondary'}

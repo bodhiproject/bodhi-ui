@@ -26,8 +26,8 @@ export default class Option {
     this.phase = event.phase;
     this.value = this.amount;
     const totalBalance = sum(event.betRoundBets);
-    this.percent = totalBalance === 0 ? totalBalance : round((this.amount / totalBalance) * 100);
-    this.userPercent = this.amount === 0 ? this.amount : round((event.userBetRoundBets[i] / this.amount) * this.percent);
+    this.percent = totalBalance === 0 ? totalBalance : round((this.amount / totalBalance) * 100, 2);
+    this.userPercent = this.amount === 0 ? this.amount : round((event.userBetRoundBets[i] / this.amount) * this.percent, 2);
     this.userValue = event.userBetRoundBets[i];
     this.disabled = true;
     this.isBetting = true;
