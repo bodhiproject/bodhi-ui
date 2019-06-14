@@ -63,14 +63,12 @@ const styles = (theme) => ({
     fontSize: '1.05rem',
     fontWeight: '400',
     fontFamily: 'Noto Sans TC, sans-serif',
-    zIndex: 100,
     whiteSpace: 'nowrap',
   },
   eventOptionInput: {
     fontSize: theme.sizes.font.xLarge,
   },
   overText: {
-    zIndex: 100,
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
@@ -105,6 +103,7 @@ const styles = (theme) => ({
   textWrapper: {
     width: '100%',
     height: 50,
+    zIndex: 100,
     position: 'absolute',
     display: 'flex',
     justifyContent: 'space-between',
