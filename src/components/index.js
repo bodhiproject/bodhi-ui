@@ -25,4 +25,4 @@ export { default as TutorialCarouselDialog } from './TutorialCarouselDialog';
 export { default as TxSentDialog } from './TxSentDialog';
 export { default as Warning } from './Warning';
 export { default as SeeAllButton } from './SeeAllButton';
-export { default as NoWalletDialog } from './NoWalletDialog';
+export { default as NoWalletPrompt } from './NoWalletPrompt';
