@@ -51,7 +51,7 @@ export default class Option extends Component {
               <span className={classes.overText}>
                 {`${name}`}
               </span>
-              <div className={classes.eventOptionProgressNum}>{`${percent}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
+              <div className={classes.eventOptionProgressNum}>{`${toFixed(percent)}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
             </div>
             <Progress
               color={isBetting ? 'primary' : 'secondary'}

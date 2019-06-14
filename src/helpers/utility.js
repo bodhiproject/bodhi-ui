@@ -213,10 +213,10 @@ export function toFixed(num, isFullNumber) {
   if (String(num).length === 0) return '';
   if (Number(num) !== 0 && !num) return '';
   if (isFullNumber) {
-    return Number(num).toFixed(2);
+    return numbro(num).format({ mantissa: 2, trimMantissa: true });
   }
 
-  return numbro(num).format({ average: true, mantissa: 2 });
+  return numbro(num).format({ average: true, mantissa: 2, trimMantissa: true });
 }
 
 export function getEventDesc(event, currentAddress) {
