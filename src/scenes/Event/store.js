@@ -378,8 +378,8 @@ export default class EventStore {
 
     // Trying to bet, set result or vote when not enough NBOT
     if (currentWalletNbot >= 0 && (
-      (status === BETTING && this.amount + maxTransactionFee > currentWalletNbot)
-      || (status === ARBITRATION && this.amount + maxTransactionFee > currentWalletNbot)
+      (status === BETTING && Number(this.amount) + maxTransactionFee > currentWalletNbot)
+      || (status === ARBITRATION && Number(this.amount) + maxTransactionFee > currentWalletNbot)
       || ((status === ORACLE_RESULT_SETTING || status === OPEN_RESULT_SETTING) && currentWalletNbot < consensusThreshold + maxTransactionFee)
     )) {
       this.buttonDisabled = true;
