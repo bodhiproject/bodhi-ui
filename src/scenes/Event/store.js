@@ -242,7 +242,7 @@ export default class EventStore {
     const address = this.event && this.event.address;
     if (!address || !this.app.wallet.currentAddress) return;
 
-    // If we have already called calculateWinnings before,
+    // If we have already called didWithdraw before,
     // only call it again every 5 blocks.
     if (isDefined(this.didWithdraw) && this.app.global.syncBlockNum % 5 !== 0) {
       return;
