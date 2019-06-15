@@ -27,7 +27,7 @@ const INIT = {
   returnRate: 0,
   profitOrLoss: 0,
   pendingWithdraw: [],
-  nbotWinnings: undefined,
+  nbotWinnings: undefined, // number
   amount: '',
   selectedOptionIdx: -1,
   buttonDisabled: false,
@@ -37,7 +37,7 @@ const INIT = {
     amount: '',
     address: '',
   },
-  didWithdraw: undefined,
+  didWithdraw: undefined, // boolean
 };
 
 export default class EventStore {
