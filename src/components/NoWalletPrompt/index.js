@@ -2,13 +2,33 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { Dialog, Grid, withStyles } from '@material-ui/core';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import styles from './styles';
 import { urls } from '../../config/app';
 
 const AppStoreBadge = '/images/app_store_badge.png';
 const GooglePlayBadge = '/images/google_play_badge.png';
 const ChromeWebStoreBadge = '/images/chrome_web_store_badge.png';
+
+const appStoreUrl = {
+  en: urls.NAKA_WALLET_APP_STORE,
+  zh: urls.NAKA_WALLET_APP_STORE_CHINA,
+  ko: urls.NAKA_WALLET_APP_STORE,
+  parse(locale) {
+    return this[locale.slice(0, 2)];
+  },
+};
+
+const playStoreUrl = {
+  en: urls.NAKA_WALLET_PLAY_STORE,
+  zh: urls.NAKA_WALLET_PLAY_STORE_CHINA,
+  ko: urls.NAKA_WALLET_PLAY_STORE,
+  parse(locale) {
+    return this[locale.slice(0, 2)];
+  },
+};
+
+@injectIntl
 @withStyles(styles)
 @inject('store')
 @observer
@@ -49,7 +69,7 @@ class NoWalletPrompt extends Component {
     );
   }
 
-  renderBadges = () => (
+  renderBadges = (intl) => (
     <Grid
       container
       spacing={0}
@@ -58,19 +78,19 @@ class NoWalletPrompt extends Component {
       alignItems="center"
       alignContent="center"
     >
-      {this.renderBadge(AppStoreBadge, urls.NAKA_WALLET_APP_STORE)}
-      {this.renderBadge(GooglePlayBadge, urls.NAKA_WALLET_PLAY_STORE)}
+      {this.renderBadge(AppStoreBadge, appStoreUrl.parse(intl.locale))}
+      {this.renderBadge(GooglePlayBadge, playStoreUrl.parse(intl.locale))}
       {this.renderBadge(ChromeWebStoreBadge, urls.NAKA_WALLET_CHROME)}
     </Grid>
   )
 
   renderContent = () => {
-    const { classes } = this.props;
+    const { classes, intl } = this.props;
     return (
       <Fragment>
         <img src="/images/naka_logo.png" alt="Naka Wallet Logo" className={classes.icon} />
         {this.renderTexts()}
-        {this.renderBadges()}
+        {this.renderBadges(intl)}
       </Fragment>
     );
   }
