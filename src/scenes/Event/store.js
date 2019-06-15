@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum } from 'lodash';
+import { sum, isDefined } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { EventWarningType, EVENT_STATUS, TransactionStatus, Routes } from 'constants';
@@ -27,7 +27,7 @@ const INIT = {
   returnRate: 0,
   profitOrLoss: 0,
   pendingWithdraw: [],
-  nbotWinnings: 0,
+  nbotWinnings: undefined,
   amount: '',
   selectedOptionIdx: -1,
   buttonDisabled: false,
@@ -298,6 +298,12 @@ export default class EventStore {
   calculateWinnings = async () => {
     const address = this.event && this.event.address;
     if (!address || !this.app.wallet.currentAddress) return;
+
+    // If we have already called calculateWinnings before,
+    // only call it again every 5 blocks.
+    if (isDefined(this.nbotWinnings) && this.app.global.syncBlockNum % 5 !== 0) {
+      return;
+    }
 
     try {
       const { data } = await axios.get(API.CALCULATE_WINNINGS, {
