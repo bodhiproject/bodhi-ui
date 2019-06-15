@@ -210,6 +210,7 @@ export function shortenAddress(text, maxLength) {
 }
 
 export function toFixed(num, isFullNumber) {
+  if (isUndefined(num)) return '';
   if (String(num).length === 0) return '';
   if (Number(num) !== 0 && !num) return '';
   if (isFullNumber) {
