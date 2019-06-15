@@ -305,8 +305,11 @@ export async function searchEvents(client, args) {
 export async function withdrawableEvents(client, args) {
   const res = await new GraphQuery(client, QUERY_WITHDRAWABLE_EVENTS, args)
     .execute();
-  res.items = map(res.items, (event) => new MultipleResultsEvent(event));
-  return res;
+  const tmp = {};
+  tmp.items = map(res.items, (event) => new MultipleResultsEvent(event));
+  tmp.pageInfo = res.pageInfo;
+  tmp.totalCount = res.totalCount;
+  return tmp;
 }
 
 /**
