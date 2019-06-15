@@ -189,6 +189,10 @@ export default class {
     const address = event ? event.address : undefined;
     this.updating = true;
     if (location === Routes.ACTIVITY_HISTORY) {
+      if (!account) {
+        this.updating = false;
+        return;
+      }
       const filters = { transactorAddress: account };
       const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
@@ -221,7 +225,10 @@ export default class {
 
     if (location === Routes.ACTIVITY_HISTORY) {
       this.limit = ACTIVITY_HISTORY_LIMIT;
-      if (!account) return;
+      if (!account) {
+        this.loaded = true;
+        return;
+      }
       await this.loadFirstTransactions({ transactorAddress: account });
     } else if (location === Routes.EVENT) {
       if (!address) return;

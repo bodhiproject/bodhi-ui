@@ -16,6 +16,9 @@ module.exports = {
   },
   urls: {
     NakaWalletWebStore: 'https://chrome.google.com/webstore/detail/NakaWallet/hdmjdgjbehedbnjmljikggbmmbnbmlnd',
+    NAKA_WALLET_CHROME: 'https://chrome.google.com/webstore/detail/naka-wallet/leopeeejkinfegnjkhpmpkaddnicjlll',
+    NAKA_WALLET_APP_STORE: 'https://itunes.apple.com/us/app/naka-wallet/id1448562757',
+    NAKA_WALLET_PLAY_STORE: 'https://play.google.com/store/apps/details?id=com.nakachain.wallet',
   },
   debug: {
     // Set to false if in test environment and Insight API is down

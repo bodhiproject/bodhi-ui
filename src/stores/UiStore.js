@@ -12,6 +12,7 @@ export default class UiStore {
   @observable searchBarMode = false
   @observable dropdownMenuOpen = false;
   @observable currentTimeUnix = 0;
+  @observable noWalletDialogVisible = false;
   counterInterval = null;
 
   get localeMessages() {
@@ -99,5 +100,15 @@ export default class UiStore {
     window.open(faqUrls[this.locale], '_blank');
     Tracking.track('navBar-helpClick');
     this.toggleDropdownMenu();
+  }
+
+  @action
+  showNoWalletDialog = () => {
+    this.noWalletDialogVisible = true;
+  }
+
+  @action
+  hideNoWalletDialog = () => {
+    this.noWalletDialogVisible = false;
   }
 }

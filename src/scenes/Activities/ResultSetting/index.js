@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { InstallNakaWalletInline } from 'components';
+import { NoWalletPrompt } from 'components';
 import InfiniteScroll from '../../../components/InfiniteScroll';
 import EventCard from '../../../components/EventCard';
 import Loading from '../../../components/EventListLoading';
@@ -28,7 +28,7 @@ export default class ResultSetting extends Component {
             loadingMore={loadingMore}
           />
         ) : (
-          <InstallNakaWalletInline />
+          <NoWalletPrompt inline />
         )}
       </Fragment>
     );

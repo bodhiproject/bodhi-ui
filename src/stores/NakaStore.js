@@ -85,6 +85,21 @@ export default class NakaStore {
   }
 
   @action
+  checkLoginAndPopup = () => {
+    const { ui: { showNoWalletDialog } } = this.app;
+    if (!this.loggedIn) {
+      showNoWalletDialog();
+      return false;
+    }
+    return true;
+  }
+
+  getSlicedAddress = () => {
+    if (this.loggedIn) return `${this.account.slice(0, 6)}...${this.account.slice(-6)}`;
+    return '';
+  }
+
+  @action
   openPopover = async (messageId) => {
     this.popoverOpen = true;
 

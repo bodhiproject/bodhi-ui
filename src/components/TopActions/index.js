@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { Button, Grid, withStyles } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
@@ -10,6 +10,7 @@ import styles from './styles';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
+@withRouter
 @inject('store')
 @observer
 export default class TopActions extends Component {
@@ -22,6 +23,11 @@ export default class TopActions extends Component {
     noCreateEventButton: false,
   };
 
+  handleCreateEventClick = () => {
+    const { store: { naka: { checkLoginAndPopup } }, history } = this.props;
+    if (checkLoginAndPopup()) history.push(Routes.CREATE_EVENT);
+  }
+
   render() {
     const { classes, noCreateEventButton, fontSize } = this.props;
 
@@ -29,17 +35,16 @@ export default class TopActions extends Component {
       <Grid container className={classes.dashboardActionsWrapper}>
         <Grid item xs={6}>
           {!noCreateEventButton && (
-            <Link to={Routes.CREATE_EVENT}>
-              <Button
-                variant="contained"
-                size="medium"
-                color="primary"
-                className={classes.createEventButton}
-              >
-                <Add className={classes.createEventButtonIcon} fontSize={fontSize} />
-                <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
-              </Button>
-            </Link>
+            <Button
+              variant="contained"
+              size="medium"
+              color="primary"
+              className={classes.createEventButton}
+              onClick={this.handleCreateEventClick}
+            >
+              <Add className={classes.createEventButtonIcon} fontSize={fontSize} />
+              <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
+            </Button>
           )}
         </Grid>
       </Grid>

@@ -25,15 +25,18 @@ export default class BottomBar extends Component {
       classes,
       store: {
         global: { syncBlockTime, online },
-        naka: { loggedIn },
+        naka: { loggedIn, getSlicedAddress },
         wallet: { lastAddressWithdrawLimit },
       },
     } = this.props;
 
+    let slicedAddress = getSlicedAddress();
+    slicedAddress = slicedAddress.length > 0 ? `: (${slicedAddress})` : '';
+
     return (
       <Paper className={classes.paper}>
         <Box display="flex" justifyContent="flex-start">
-          <NetworkConnection online={online} loggedIn={loggedIn} />
+          <NetworkConnection online={online} loggedIn={loggedIn} slicedAddress={slicedAddress} />
         </Box>
         <Box display="flex" justifyContent="flex-end">
           <Info blockTime={syncBlockTime} lastAddressWithdrawLimit={lastAddressWithdrawLimit} />
@@ -43,7 +46,7 @@ export default class BottomBar extends Component {
   }
 }
 
-const NetworkConnection = withStyles(styles)(({ classes, online, loggedIn }) => (
+const NetworkConnection = withStyles(styles)(({ classes, online, loggedIn, slicedAddress }) => (
   <div>
     <div className={classes.statusContainer}>
       {online
@@ -61,6 +64,7 @@ const NetworkConnection = withStyles(styles)(({ classes, online, loggedIn }) => 
       }
       <Typography variant="body2" className={classes.bottomBarTxt}>
         <FormattedMessage id="bottomBar.wallet" defaultMessage="Wallet" />
+        {slicedAddress}
       </Typography>
     </div>
   </div>
