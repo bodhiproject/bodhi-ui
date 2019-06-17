@@ -210,15 +210,6 @@ export default class CreateEventStore {
   constructor(app) {
     this.app = app;
 
-    // when we add the creator, update the currentWalletAddress
-    reaction(
-      () => this.creator,
-      () => {
-        if (this.creator) {
-          this.app.wallet.setCurrentWalletAddress(this.creator);
-        }
-      }
-    );
     // make sure there are no errors when closing the result setter dialog
     reaction(
       () => this.resultSetterDialogOpen,

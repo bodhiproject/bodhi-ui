@@ -16,6 +16,7 @@ const INIT_VALUES = {
     withdrawCount: 0,
     totalCount: 0,
   },
+  balanceNeedUpdate: false,
 };
 
 export default class GlobalStore {
@@ -26,6 +27,7 @@ export default class GlobalStore {
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
+  @observable balanceNeedUpdate = INIT_VALUES.balanceNeedUpdate
   userData = observable({
     resultSettingCount: INIT_VALUES.userData.resultSettingCount,
     withdrawCount: INIT_VALUES.userData.withdrawCount,
@@ -51,10 +53,15 @@ export default class GlobalStore {
     );
     reaction(
       () => this.syncBlockNum,
-      () => {
-        if (this.localWallet === false) {
-          this.app.wallet.fetchNbotBalance(this.app.wallet.currentAddress);
-          this.app.wallet.fetchExchangeRate();
+      async () => {
+        const { wallet: { currentWalletAddress: { nbot: currBalance }, currentAddress, prevBalance, fetchNbotBalance, fetchExchangeRate } } = this.app;
+        if (this.balanceNeedUpdate && currBalance === prevBalance) {
+          await fetchNbotBalance(currentAddress);
+          fetchExchangeRate();
+          if (this.app.wallet.currentWalletAddress.nbot !== this.app.wallet.prevBalance) {
+            this.balanceNeedUpdate = false;
+            this.app.wallet.prevBalance = this.app.wallet.currentWalletAddress.nbot;
+          }
         }
       }
     );

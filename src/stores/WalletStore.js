@@ -13,6 +13,7 @@ const INIT_VALUE = {
   nbotContract: undefined,
   nbotOwner: undefined,
   exchangeRate: undefined,
+  prevBalance: 0,
 };
 
 export default class WalletStore {
@@ -25,6 +26,7 @@ export default class WalletStore {
   @observable nbotOwner = INIT_VALUE.nbotOwner;
   @observable exchangeRate = INIT_VALUE.exchangeRate
   nbotContract = INIT_VALUE.nbotContract;
+  prevBalance = INIT_VALUE.prevBalance;
   @computed get currentAddress() {
     return this.currentWalletAddress ? this.currentWalletAddress.address : '';
   }
@@ -38,14 +40,6 @@ export default class WalletStore {
 
   constructor(app) {
     this.app = app;
-  }
-
-  /**
-   * Finds and sets the current wallet address based on the address.
-   * @param {string} address Address to find in the list of wallet addresses.
-   */
-  setCurrentWalletAddress = (address) => {
-    this.currentWalletAddress = find(this.addresses, { address });
   }
 
   /**
@@ -95,6 +89,7 @@ export default class WalletStore {
       await this.fetchNbotBalance(address);
       await this.fetchNbotOwner();
       await this.fetchExchangeRate();
+      this.prevBalance = this.currentWalletAddress.nbot;
     }
   }
 

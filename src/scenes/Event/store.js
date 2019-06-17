@@ -38,9 +38,11 @@ const INIT = {
     address: '',
   },
   didWithdraw: undefined, // boolean
+  eventNeedUpdate: false,
 };
 
 export default class EventStore {
+  @observable eventNeedUpdate = INIT.eventNeedUpdate
   @observable loading = INIT.loading
   @observable event = INIT.event
   @observable address = INIT.address
@@ -193,6 +195,16 @@ export default class EventStore {
         + this.app.wallet.currentWalletAddress,
       () => this.disableEventActionsIfNecessary(),
       { fireImmediately: true },
+    );
+    // Update on new block
+    reaction(
+      () => this.app.global.syncBlockNum,
+      async () => {
+        if (this.eventNeedUpdate && this.app.ui.location === Routes.EVENT) {
+          await this.initEvent();
+        }
+        this.eventNeedUpdate = false;
+      },
     );
   }
 
@@ -449,7 +461,8 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
-    await this.initEvent();
+    this.eventNeedUpdate = true;
+    this.app.global.balanceNeedUpdate = true;
   }
 
   set = async () => {
@@ -463,7 +476,8 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
-    await this.initEvent();
+    this.eventNeedUpdate = true;
+    this.app.global.balanceNeedUpdate = true;
   }
 
   vote = async () => {
@@ -477,7 +491,8 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
-    await this.initEvent();
+    this.eventNeedUpdate = true;
+    this.app.global.balanceNeedUpdate = true;
   }
 
   withdraw = async () => {
@@ -487,6 +502,7 @@ export default class EventStore {
       escrowAmount: decimalToSatoshi(this.escrowAmount),
       version: this.event.version,
     });
-    await this.initEvent();
+    this.eventNeedUpdate = true;
+    this.app.global.balanceNeedUpdate = true;
   }
 }
