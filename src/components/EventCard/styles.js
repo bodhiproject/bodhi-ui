@@ -96,7 +96,9 @@ const styles = (theme) => ({
     padding: `${theme.padding.spaceX.px} 0px 0px`,
   },
   upper: {
-    marginBottom: theme.padding.space12X.px,
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: theme.padding.space12X.px,
+    },
   },
 });
 
