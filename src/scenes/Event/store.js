@@ -38,9 +38,11 @@ const INIT = {
     address: '',
   },
   didWithdraw: undefined, // boolean
+  eventNeedUpdate: false,
 };
 
 export default class EventStore {
+  @observable eventNeedUpdate = INIT.eventNeedUpdate
   @observable loading = INIT.loading
   @observable event = INIT.event
   @observable address = INIT.address
@@ -156,6 +158,9 @@ export default class EventStore {
   reset = () => Object.assign(this, INIT);
 
   @action
+  toggleEventNeedUpdate = () => this.eventNeedUpdate = !this.eventNeedUpdate;
+
+  @action
   async init({ txid, url }) {
     this.reset();
     this.txid = txid;
@@ -198,8 +203,9 @@ export default class EventStore {
     reaction(
       () => this.app.global.syncBlockNum,
       async () => {
-        if (this.app.ui.location === Routes.EVENT) {
+        if (this.eventNeedUpdate && this.app.ui.location === Routes.EVENT) {
           await this.initEvent();
+          this.toggleEventNeedUpdate();
         }
       },
     );
@@ -458,6 +464,8 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
+    this.toggleEventNeedUpdate();
+    this.app.global.toggleBalanceNeedUpdate();
   }
 
   set = async () => {
@@ -471,6 +479,8 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
+    this.toggleEventNeedUpdate();
+    this.app.global.toggleBalanceNeedUpdate();
   }
 
   vote = async () => {
@@ -484,6 +494,8 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
+    this.toggleEventNeedUpdate();
+    this.app.global.toggleBalanceNeedUpdate();
   }
 
   withdraw = async () => {
@@ -493,5 +505,7 @@ export default class EventStore {
       escrowAmount: decimalToSatoshi(this.escrowAmount),
       version: this.event.version,
     });
+    this.toggleEventNeedUpdate();
+    this.app.global.toggleBalanceNeedUpdate();
   }
 }

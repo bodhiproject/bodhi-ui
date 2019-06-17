@@ -28,6 +28,7 @@ const INIT_VALUES = {
   myWithdrawSkip: 0,
   limit: 0,
   updating: false,
+  prevTxLen: 0,
 };
 const HISTORY_TYPES = {
   ALL_TRANSACTIONS: 0,
@@ -61,6 +62,8 @@ export default class {
   @observable resultHasMore = INIT_VALUES.resultHasMore;
   @observable resultSkip = INIT_VALUES.resultSkip;
 
+  prevTxLen = INIT_VALUES.prevTxLen;
+
   constructor(app) {
     this.app = app;
 
@@ -77,7 +80,15 @@ export default class {
     reaction(
       () => this.app.global.syncBlockNum,
       async () => {
-        if (!this.updating) await this.update();
+        const { ui: { toggleHistoryNeedUpdate, ifHistoryNeedUpdate } } = this.app;
+        if (!this.updating && ifHistoryNeedUpdate) {
+          await this.update();
+          if (this.prevTxLen !== this.transactions.length) {
+            // expecting new create event tx entry
+            toggleHistoryNeedUpdate();
+            this.setPrevTxLength();
+          }
+        }
       },
     );
   }
@@ -217,6 +228,9 @@ export default class {
   }
 
   @action
+  setPrevTxLength = () => this.prevTxLen = this.transactions.length;
+
+  @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
 
@@ -230,6 +244,7 @@ export default class {
         return;
       }
       await this.loadFirstTransactions({ transactorAddress: account });
+      this.setPrevTxLength();
     } else if (location === Routes.EVENT) {
       if (!address) return;
 
@@ -295,6 +310,7 @@ export default class {
           this.transactions = [...this.transactions, ...moreTxs];
           this.transactions = uniqBy(this.transactions, 'txid');
           this.loadingMore = false; // stop showing the loading icon
+          this.setPrevTxLength();
         });
       } catch (e) {
         this.skip -= this.limit;

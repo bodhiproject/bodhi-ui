@@ -210,15 +210,6 @@ export default class CreateEventStore {
   constructor(app) {
     this.app = app;
 
-    // when we add the creator, update the currentWalletAddress
-    reaction(
-      () => this.creator,
-      () => {
-        if (this.creator) {
-          this.app.wallet.setCurrentWalletAddress(this.creator);
-        }
-      }
-    );
     // make sure there are no errors when closing the result setter dialog
     reaction(
       () => this.resultSetterDialogOpen,
@@ -528,6 +519,7 @@ export default class CreateEventStore {
 
   @action
   submit = async ({ ...props }) => {
+    const { ui: { toggleHistoryNeedUpdate } } = this.app;
     this.validateAll();
     if (!this.isAllValid) return;
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
@@ -548,6 +540,8 @@ export default class CreateEventStore {
     });
     if (!txid) return;
     this.close();
+    toggleHistoryNeedUpdate();
+    this.app.global.toggleBalanceNeedUpdate();
     props.history.push(Routes.ACTIVITY_HISTORY);
   }
 
