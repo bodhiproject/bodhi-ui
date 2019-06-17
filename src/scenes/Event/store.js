@@ -194,15 +194,6 @@ export default class EventStore {
       () => this.disableEventActionsIfNecessary(),
       { fireImmediately: true },
     );
-    // Update on new block
-    reaction(
-      () => this.app.global.syncBlockNum,
-      async () => {
-        if (this.app.ui.location === Routes.EVENT) {
-          await this.initEvent();
-        }
-      },
-    );
   }
 
   @action
@@ -458,6 +449,7 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
+    await this.initEvent();
   }
 
   set = async () => {
@@ -471,6 +463,7 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
+    await this.initEvent();
   }
 
   vote = async () => {
@@ -484,6 +477,7 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
+    await this.initEvent();
   }
 
   withdraw = async () => {
@@ -493,5 +487,6 @@ export default class EventStore {
       escrowAmount: decimalToSatoshi(this.escrowAmount),
       version: this.event.version,
     });
+    await this.initEvent();
   }
 }
