@@ -40,10 +40,6 @@ export default class GlobalStore {
     return this.socketOnline && this.internetOnline;
   }
 
-  @computed get getBalanceNeedUpdate() {
-    return this.balanceNeedUpdate;
-  }
-
   @action
   toggleBalanceNeedUpdate = () => this.balanceNeedUpdate = !this.balanceNeedUpdate;
 

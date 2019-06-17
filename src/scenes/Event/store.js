@@ -205,8 +205,8 @@ export default class EventStore {
       async () => {
         if (this.eventNeedUpdate && this.app.ui.location === Routes.EVENT) {
           await this.initEvent();
+          this.toggleEventNeedUpdate();
         }
-        this.toggleEventNeedUpdate();
       },
     );
   }
