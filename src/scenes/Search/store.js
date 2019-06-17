@@ -73,7 +73,8 @@ export default class SearchStore {
       });
       this.bets = filter(this.events, (event) => [EVENT_STATUS.PRE_BETTING, EVENT_STATUS.BETTING].includes(event.status));
       this.sets = filter(this.events, (e) =>
-        e.status === EVENT_STATUS.ORACLE_RESULT_SETTING
+        e.status === EVENT_STATUS.PRE_RESULT_SETTING
+        || e.status === EVENT_STATUS.ORACLE_RESULT_SETTING
         || e.status === EVENT_STATUS.OPEN_RESULT_SETTING);
       this.votes = filter(this.events, { status: EVENT_STATUS.ARBITRATION });
       this.withdraws = filter(this.events, { status: EVENT_STATUS.WITHDRAWING });
