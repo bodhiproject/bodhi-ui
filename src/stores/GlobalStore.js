@@ -62,7 +62,7 @@ export default class GlobalStore {
       () => this.syncBlockNum,
       async () => {
         const { wallet: { currentBalance, currentAddress, getPrevBalance, setPrevBalance, fetchNbotBalance, fetchExchangeRate } } = this.app;
-        if (this.balanceNeedUpdate && currentBalance === getPrevBalance) {
+        if (this.balanceNeedUpdate) {
           await fetchNbotBalance(currentAddress);
           fetchExchangeRate();
           if (currentBalance !== getPrevBalance) {

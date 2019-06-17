@@ -158,6 +158,9 @@ export default class EventStore {
   reset = () => Object.assign(this, INIT);
 
   @action
+  toggleEventNeedUpdate = () => this.eventNeedUpdate = !this.eventNeedUpdate;
+
+  @action
   async init({ txid, url }) {
     this.reset();
     this.txid = txid;
@@ -203,7 +206,7 @@ export default class EventStore {
         if (this.eventNeedUpdate && this.app.ui.location === Routes.EVENT) {
           await this.initEvent();
         }
-        this.eventNeedUpdate = false;
+        this.toggleEventNeedUpdate();
       },
     );
   }
@@ -461,7 +464,7 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
-    this.eventNeedUpdate = true;
+    this.toggleEventNeedUpdate();
     this.app.global.toggleBalanceNeedUpdate();
   }
 
@@ -476,7 +479,7 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
-    this.eventNeedUpdate = true;
+    this.toggleEventNeedUpdate();
     this.app.global.toggleBalanceNeedUpdate();
   }
 
@@ -491,7 +494,7 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
-    this.eventNeedUpdate = true;
+    this.toggleEventNeedUpdate();
     this.app.global.toggleBalanceNeedUpdate();
   }
 
@@ -502,7 +505,7 @@ export default class EventStore {
       escrowAmount: decimalToSatoshi(this.escrowAmount),
       version: this.event.version,
     });
-    this.eventNeedUpdate = true;
+    this.toggleEventNeedUpdate();
     this.app.global.toggleBalanceNeedUpdate();
   }
 }
