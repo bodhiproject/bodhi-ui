@@ -462,7 +462,7 @@ export default class EventStore {
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
     this.eventNeedUpdate = true;
-    this.app.global.balanceNeedUpdate = true;
+    this.app.global.toggleBalanceNeedUpdate();
   }
 
   set = async () => {
@@ -477,7 +477,7 @@ export default class EventStore {
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
     this.eventNeedUpdate = true;
-    this.app.global.balanceNeedUpdate = true;
+    this.app.global.toggleBalanceNeedUpdate();
   }
 
   vote = async () => {
@@ -492,7 +492,7 @@ export default class EventStore {
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
     this.eventNeedUpdate = true;
-    this.app.global.balanceNeedUpdate = true;
+    this.app.global.toggleBalanceNeedUpdate();
   }
 
   withdraw = async () => {
@@ -503,6 +503,6 @@ export default class EventStore {
       version: this.event.version,
     });
     this.eventNeedUpdate = true;
-    this.app.global.balanceNeedUpdate = true;
+    this.app.global.toggleBalanceNeedUpdate();
   }
 }

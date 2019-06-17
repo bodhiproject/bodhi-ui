@@ -40,6 +40,13 @@ export default class GlobalStore {
     return this.socketOnline && this.internetOnline;
   }
 
+  @computed get getBalanceNeedUpdate() {
+    return this.balanceNeedUpdate;
+  }
+
+  @action
+  toggleBalanceNeedUpdate = () => this.balanceNeedUpdate = !this.balanceNeedUpdate;
+
   constructor(app) {
     this.app = app;
 
@@ -54,13 +61,13 @@ export default class GlobalStore {
     reaction(
       () => this.syncBlockNum,
       async () => {
-        const { wallet: { currentWalletAddress: { nbot: currBalance }, currentAddress, prevBalance, fetchNbotBalance, fetchExchangeRate } } = this.app;
-        if (this.balanceNeedUpdate && currBalance === prevBalance) {
+        const { wallet: { currentBalance, currentAddress, getPrevBalance, setPrevBalance, fetchNbotBalance, fetchExchangeRate } } = this.app;
+        if (this.balanceNeedUpdate && currentBalance === getPrevBalance) {
           await fetchNbotBalance(currentAddress);
           fetchExchangeRate();
-          if (this.app.wallet.currentWalletAddress.nbot !== this.app.wallet.prevBalance) {
-            this.balanceNeedUpdate = false;
-            this.app.wallet.prevBalance = this.app.wallet.currentWalletAddress.nbot;
+          if (currentBalance !== getPrevBalance) {
+            this.toggleBalanceNeedUpdate();
+            setPrevBalance();
           }
         }
       }

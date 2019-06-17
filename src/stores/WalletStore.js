@@ -31,6 +31,14 @@ export default class WalletStore {
     return this.currentWalletAddress ? this.currentWalletAddress.address : '';
   }
 
+  @computed get currentBalance() {
+    return this.currentWalletAddress ? this.currentWalletAddress.nbot : undefined;
+  }
+
+  @computed get getPrevBalance() {
+    return this.prevBalance;
+  }
+
   @computed get lastAddressWithdrawLimit() {
     return {
       NAKA: this.currentWalletAddress ? this.currentWalletAddress.naka : 0,
@@ -89,8 +97,13 @@ export default class WalletStore {
       await this.fetchNbotBalance(address);
       await this.fetchNbotOwner();
       await this.fetchExchangeRate();
-      this.prevBalance = this.currentWalletAddress.nbot;
+      this.setPrevBalance();
     }
+  }
+
+  @action
+  setPrevBalance = () => {
+    this.prevBalance = this.currentBalance;
   }
 
   @action

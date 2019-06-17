@@ -1,4 +1,4 @@
-import { observable, action, reaction } from 'mobx';
+import { observable, action, reaction, computed } from 'mobx';
 import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format';
 import { Routes } from 'constants';
@@ -14,6 +14,7 @@ export default class UiStore {
   @observable currentTimeUnix = 0;
   @observable noWalletDialogVisible = false;
   counterInterval = null;
+  historyNeedUpdate = false; // for after create event, history gets init, and know need to pull for new create event tx
 
   get localeMessages() {
     return locales[this.locale].messages;
@@ -29,6 +30,10 @@ export default class UiStore {
       locale = 'zh-Hans-CN';
     }
     return locale;
+  }
+
+  @computed get ifHistoryNeedUpdate() {
+    return this.historyNeedUpdate;
   }
 
   constructor(app) {
@@ -72,6 +77,11 @@ export default class UiStore {
   }
 
   getMomentLocale = () => moment.locale();
+
+  @action
+  toggleHistoryNeedUpdate = () => {
+    this.historyNeedUpdate = !this.historyNeedUpdate;
+  }
 
   // this setter is only here so we don't have to import `locales` into other files
   @action

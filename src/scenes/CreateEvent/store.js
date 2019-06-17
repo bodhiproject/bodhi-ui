@@ -519,6 +519,7 @@ export default class CreateEventStore {
 
   @action
   submit = async ({ ...props }) => {
+    const { ui: { toggleHistoryNeedUpdate } } = this.app;
     this.validateAll();
     if (!this.isAllValid) return;
     const escrowAmountSatoshi = decimalToSatoshi(this.escrowAmount);
@@ -539,6 +540,8 @@ export default class CreateEventStore {
     });
     if (!txid) return;
     this.close();
+    toggleHistoryNeedUpdate();
+    this.app.global.toggleBalanceNeedUpdate();
     props.history.push(Routes.ACTIVITY_HISTORY);
   }
 
