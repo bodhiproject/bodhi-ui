@@ -85,11 +85,6 @@ const styles = (theme) => ({
     bottom: theme.padding.space2X.px,
     color: theme.palette.text.primary,
   },
-  alignBottom: {
-    position: 'absolute',
-    bottom: '13px',
-    width: 'calc(100% - 48px)',
-  },
   stateText: {
     color: '#9aa5b1',
     textAlign: 'left',
