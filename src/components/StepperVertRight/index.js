@@ -58,7 +58,10 @@ export default class StepperVertRight extends Component {
   }
 
   getSteps = () => {
-    const { intl: { formatMessage }, store: { eventPage: { event }, history: { resultSetsHistory } } } = this.props;
+    const {
+      intl: { formatMessage },
+      store: { eventPage: { event }, history: { resultSetsHistory } },
+    } = this.props;
     const { syncBlockTime } = this.props.store.global;
 
     const currentArbitrationEndTime = event.arbitrationEndTime;
@@ -67,7 +70,9 @@ export default class StepperVertRight extends Component {
 
     let current;
     const arbitrations = resultSetsHistory.slice(1);
-    let lastArbitrationEndTime = event.resultSetEndTime;
+    let lastArbitrationEndTime = resultSetsHistory.length > 0
+      ? resultSetsHistory[resultSetsHistory.length - 1].block.blockTime
+      : event.resultSetEndTime;
     const numOfDOracles = arbitrations.length;
 
     // Init all events with these steps
