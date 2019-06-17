@@ -18,6 +18,9 @@ const styles = (theme) => ({
     padding: theme.padding.space3X.px,
     '&.top': {
       height: '400px',
+      [theme.breakpoints.down('xs')]: {
+        height: 'auto',
+      },
     },
     '&.button': {
       textAlign: 'center',
@@ -27,6 +30,9 @@ const styles = (theme) => ({
       fontSize: theme.sizes.font.small,
       color: theme.palette.text.primary,
     },
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   dashboardTime: {
     color: theme.palette.text.hint,
@@ -47,6 +53,14 @@ const styles = (theme) => ({
     fontSize: '1.05rem',
     textAlign: 'left',
     whiteSpace: 'nowrap',
+    [theme.breakpoints.down('xs')]: {
+      maxHeight: 'none',
+      overflow: 'visible',
+      textOverflow: 'clip',
+      whiteSpace: 'normal',
+      wordBreak: 'break-word',
+      textAlign: 'justify',
+    },
   },
   eventCardNameBundle: {
     display: 'flex',
@@ -85,6 +99,9 @@ const styles = (theme) => ({
   },
   eventCardInfoItem: {
     padding: `${theme.padding.spaceX.px} 0px 0px`,
+  },
+  upper: {
+    marginBottom: theme.padding.space12X.px,
   },
 });
 

@@ -81,34 +81,36 @@ export default class EventCard extends Component {
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
-              {isPending() && status !== WITHDRAWING && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
-              {isPending() && status === WITHDRAWING && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
-              {this.isWithdrawn && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
-              <div className={classes.stateText}><FormattedMessageFixed id={messages[getEventDesc(event, currentAddress)].id} defaultMessage={messages[getEventDesc(event, currentAddress)].defaultMessage} /></div>
-              <div className={classes.eventCardNameBundle}>
-                <div className={classes.eventCardNameFlex}>
-                  <Typography variant="h6" className={classes.eventCardName}>
-                    {name}
-                  </Typography>
+              <div className={classes.upper}>
+                {isPending() && status !== WITHDRAWING && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
+                {isPending() && status === WITHDRAWING && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
+                {this.isWithdrawn && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
+                <div className={classes.stateText}><FormattedMessageFixed id={messages[getEventDesc(event, currentAddress)].id} defaultMessage={messages[getEventDesc(event, currentAddress)].defaultMessage} /></div>
+                <div className={classes.eventCardNameBundle}>
+                  <div className={classes.eventCardNameFlex}>
+                    <Typography variant="h6" className={classes.eventCardName}>
+                      {name}
+                    </Typography>
+                  </div>
+                  <FavoriteButton eventAddress={address} />
                 </div>
-                <FavoriteButton eventAddress={address} />
+                <div className={classes.eventCardNameBundle}>
+                  <div className={classes.eventCardNameFlex}>
+                    <div className={classes.eventCardInfoItem}>
+                      <FormattedMessage id='str.arbitrationReward' defaultMessage='Arbitration Reward' />{`: ${arbitrationRewardPercentage}%`}
+                    </div>
+                    <div className={classes.eventCardInfoItem}>
+                      <RaisedAmount amount={totalBets} />
+                    </div>
+                  </div>
+                  <div className={classes.eventCardInfo}>
+                    <div className={classes.eventCardInfoItem}>
+                      {getEndTime() && <TimeCorner endTime={getEndTime()} />}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className={classes.eventCardNameBundle}>
-                <div className={classes.eventCardNameFlex}>
-                  <div className={classes.eventCardInfoItem}>
-                    <FormattedMessage id='str.arbitrationReward' defaultMessage='Arbitration Reward' />{`: ${arbitrationRewardPercentage}%`}
-                  </div>
-                  <div className={classes.eventCardInfoItem}>
-                    <RaisedAmount amount={totalBets} />
-                  </div>
-                </div>
-                <div className={classes.eventCardInfo}>
-                  <div className={classes.eventCardInfoItem}>
-                    {getEndTime() && <TimeCorner endTime={getEndTime()} />}
-                  </div>
-                </div>
-              </div>
-              <div className={classes.alignBottom}>
+              <div>
                 {this.renderOptions()}
               </div>
             </div>
