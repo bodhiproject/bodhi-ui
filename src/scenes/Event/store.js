@@ -125,20 +125,20 @@ export default class EventStore {
     const totalLosingVotes = totalVotesSum - totalWinningVotes;
     const totalVotesShare = totalLosingVotes + arbitrationShare;
     const betterVotesReturn = this.betterVotes[resultIndex] + ((totalVotesShare * this.betterVotes[resultIndex]) / this.totalVotes[resultIndex]) || 0;
-    const totalInvestment = betterBetsSum + betterVotesSum + this.escrowAmount;
+    const betterEscrow = this.event.ownerAddress === currentAddress ? this.escrowAmount : 0;
+    const totalInvestment = betterBetsSum + betterVotesSum + betterEscrow;
     return {
       address: currentAddress,
-      escrow: this.escrowAmount,
+      escrow: betterEscrow,
       yourTotalBets: betterBetsSum,
       yourTotalBetsReturn: betterBetsReturn,
       yourTotalBetsReturnRate: (betterBetsReturn / betterBetsSum) * 100,
       yourTotalVotes: betterVotesSum,
       yourTotalVotesReturn: betterVotesReturn,
       yourTotalVotesReturnRate: (betterVotesReturn / betterVotesSum) * 100,
-      yourTotalReturn: betterBetsReturn + betterVotesReturn + this.escrowAmount,
+      yourTotalReturn: betterBetsReturn + betterVotesReturn + betterEscrow,
       yourWinningInvestment: this.betterBets[resultIndex] + this.betterVotes[resultIndex],
-      yourTotalReturnRate: ((betterBetsReturn + betterVotesReturn + this.escrowAmount) / totalInvestment) * 100,
-      escrowAmount: this.event.ownerAddress === currentAddress ? this.escrowAmount : 0,
+      yourTotalReturnRate: ((betterBetsReturn + betterVotesReturn + betterEscrow) / totalInvestment) * 100,
     };
   }
 
