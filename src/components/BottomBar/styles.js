@@ -44,5 +44,6 @@ export default (theme) => ({
     [theme.breakpoints.down('sm')]: {
       fontSize: theme.sizes.font.xxSmall,
     },
+    textAlign: 'right',
   },
 });

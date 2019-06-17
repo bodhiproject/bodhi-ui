@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { inject, observer } from 'mobx-react';
-import { Box, Paper, Typography, withStyles } from '@material-ui/core';
+import { Box, Paper, Typography, withStyles, Hidden } from '@material-ui/core';
 import { CheckCircle, RemoveCircle } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Token } from 'constants';
@@ -74,13 +74,25 @@ const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime 
   <div>
     <div className={classes.blockItemContainer}>
       <Typography variant="body2" className={cx(classes.bottomBarTxt, 'blockNum')}>
-        <span>
-          <FormattedMessage
-            id="bottomBar.blockTime"
-            defaultMessage="Current Block Time"
-          />
-          {`: ${getTime(blockTime)}`}
-        </span>
+        <Hidden xsDown>
+          <span>
+            <FormattedMessage
+              id="bottomBar.blockTime"
+              defaultMessage="Current Block Time"
+            />
+            {`: ${getTime(blockTime)}`}
+          </span>
+        </Hidden>
+        <Hidden smUp>
+          <span>
+            <FormattedMessage
+              id="bottomBar.blockTime"
+              defaultMessage="Current Block Time"
+            />:
+            <br />
+            {`${getTime(blockTime)}`}
+          </span>
+        </Hidden>
       </Typography>
     </div>
     <div className={classes.blockItemContainer}>
