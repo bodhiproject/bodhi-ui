@@ -1,6 +1,6 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
 import moment from 'moment';
-import { sum, isDefined } from 'lodash';
+import { sum, isUndefined } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
 import { EventWarningType, EVENT_STATUS, TransactionStatus, Routes } from 'constants';
@@ -244,7 +244,7 @@ export default class EventStore {
 
     // If we have already called didWithdraw before,
     // only call it again every 5 blocks.
-    if (isDefined(this.didWithdraw) && this.app.global.syncBlockNum % 5 !== 0) {
+    if (!isUndefined(this.didWithdraw) && this.app.global.syncBlockNum % 5 !== 0) {
       return;
     }
 
@@ -307,7 +307,7 @@ export default class EventStore {
 
     // If we have already called calculateWinnings before,
     // only call it again every 5 blocks.
-    if (isDefined(this.nbotWinnings) && this.app.global.syncBlockNum % 5 !== 0) {
+    if (!isUndefined(this.nbotWinnings) && this.app.global.syncBlockNum % 5 !== 0) {
       return;
     }
 
