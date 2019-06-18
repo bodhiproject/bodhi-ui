@@ -1,5 +1,5 @@
 import { observable, action, computed } from 'mobx';
-import { isEmpty, find, findIndex } from 'lodash';
+import { isEmpty, findIndex } from 'lodash';
 import { WalletAddress } from 'models';
 import promisify from 'js-promisify';
 import { satoshiToDecimal, weiToDecimal, numToHex } from '../helpers/utility';

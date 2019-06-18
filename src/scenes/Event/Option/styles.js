@@ -67,6 +67,9 @@ const styles = (theme) => ({
   },
   eventOptionInput: {
     fontSize: theme.sizes.font.xLarge,
+    '& > input': {
+      background: '#ffffff',
+    },
   },
   overText: {
     textOverflow: 'ellipsis',
