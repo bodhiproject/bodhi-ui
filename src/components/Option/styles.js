@@ -68,6 +68,9 @@ const styles = (theme) => ({
     fontWeight: '400',
     fontFamily: 'Noto Sans TC, sans-serif',
     whiteSpace: 'nowrap',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   eventOptionInput: {
     fontSize: theme.sizes.font.xLarge,

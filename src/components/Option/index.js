@@ -62,8 +62,8 @@ export default class Option extends Component {
                 {`${toFixed(value)} NBOT`}
               </div>
               <div className={classes.eventOptionProgressNum}>
-                {`${toFixed(percent)}%`}<br />
-                {intl.formatMessage(messages.odds, { value: odds ? toFixed(odds) : intl.formatMessage(messages.notAvailable) })}
+                <span>{`${toFixed(percent)}%`}</span>
+                {isBetting && <span>{intl.formatMessage(messages.odds, { value: odds ? toFixed(odds) : intl.formatMessage(messages.notAvailable) })}</span>}
               </div>
             </div>
             <Progress
