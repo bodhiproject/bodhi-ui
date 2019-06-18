@@ -192,7 +192,7 @@ export default class {
       }
     });
 
-    return [...pendingAddOns, ...confirmedAddOns];
+    return confirmedAddOns;
   }
 
   @action
