@@ -39,6 +39,14 @@ const messages = defineMessages({
     id: 'str.youVote',
     defaultMessage: 'You vote {value} NBOT',
   },
+  odds: {
+    id: 'str.odds',
+    defaultMessage: 'Odds: {value}',
+  },
+  notAvailable: {
+    id: 'str.notAvailable',
+    defaultMessage: 'N/A',
+  },
 });
 
 /**
@@ -70,7 +78,7 @@ export default class Option extends Component {
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
-    const { isPrevResult, percent, userPercent, isLast, isFirst, isExpanded, idx, value, userValue, token, phase, isBetting } = option;
+    const { isPrevResult, percent, userPercent, isLast, isFirst, isExpanded, idx, value, userValue, token, phase, isBetting, odds } = option;
     const { eventPage } = store;
     const { selectedOptionIdx, isWithdrawing } = eventPage;
 
@@ -104,9 +112,13 @@ export default class Option extends Component {
                 <div className={classes.eventOptionProgress}>
                   <div className={classes.textWrapper}>
                     <div className={classes.overText}>
-                      {name}
+                      <span>{name}</span>
+                      <span>{`${toFixed(value)} NBOT`}</span>
                     </div>
-                    <div className={classes.eventOptionProgressNum}>{`${toFixed(percent)}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
+                    <div className={classes.eventOptionProgressNum}>
+                      <span>{`${toFixed(percent)}%`}</span>
+                      {isBetting && <span>{intl.formatMessage(messages.odds, { value: odds ? toFixed(odds) : intl.formatMessage(messages.notAvailable) })}</span>}
+                    </div>
                   </div>
                   <Progress
                     color={isBetting ? 'primary' : 'secondary'}

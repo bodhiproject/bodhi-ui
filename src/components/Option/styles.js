@@ -26,6 +26,9 @@ const styles = (theme) => ({
     fontSize: '1.05rem',
     fontWeight: '400',
     fontFamily: 'Noto Sans TC, sans-serif',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   eventOptionNum: {
     background: theme.palette.background.grey,

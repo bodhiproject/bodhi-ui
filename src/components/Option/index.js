@@ -57,9 +57,8 @@ export default class Option extends Component {
           <div className={classes.eventOptionProgress}>
             <div className={classes.textWrapper}>
               <div className={classes.overText}>
-                {name}
-                <br></br>
-                {`${toFixed(value)} NBOT`}
+                <span>{name}</span>
+                <span>{`${toFixed(value)} NBOT`}</span>
               </div>
               <div className={classes.eventOptionProgressNum}>
                 <span>{`${toFixed(percent)}%`}</span>
