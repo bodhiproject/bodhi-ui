@@ -21,6 +21,7 @@ import {
   ALL_STATS,
   PAGINATED_MOST_BETS,
   PAGINATED_BIGGEST_WINNER,
+  TRANSACTIONS,
 } from './schema';
 
 const QUERY_EVENTS = 'events';
@@ -30,6 +31,7 @@ const QUERY_BETS = 'bets';
 const QUERY_RESULT_SETS = 'resultSets';
 const QUERY_WITHDRAWS = 'withdraws';
 const QUERY_TRANSACTIONS = 'transactions';
+const QUERY_PENDING_TRANSACTIONS = 'pendingTransactions';
 const QUERY_SYNC_INFO = 'syncInfo';
 const QUERY_TOTAL_RESULT_BETS = 'totalResultBets';
 const QUERY_ALL_STATS = 'allStats';
@@ -183,6 +185,22 @@ const QUERIES = {
         transactionSkips: $transactionSkips
       ) {
         ${PAGINATED_TRANSACTIONS}
+      }
+    }
+  `,
+
+  pendingTransactions: gql`
+    query(
+      $filter: TransactionFilter
+      $limit: Int
+      $skip: Int
+    ) {
+      pendingTransactions(
+        filter: $filter
+        limit: $limit
+        skip: $skip
+      ) {
+        ${TRANSACTIONS}
       }
     }
   `,
@@ -370,6 +388,19 @@ export async function transactions(client, args) {
   tmp.items = map(res.items, (tx) => new Transaction(tx));
   tmp.pageInfo = res.pageInfo;
   tmp.totalCount = res.totalCount;
+  return tmp;
+}
+
+/**
+ * Queries all pending transactions.
+ * Returns concatenated list of pending Events, Bets, ResultSets, and Withdraws.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function pendingTransactions(client, args) {
+  const res = await new GraphQuery(client, QUERY_PENDING_TRANSACTIONS, args).execute();
+  const tmp = map(res, (tx) => new Transaction(tx));
   return tmp;
 }
 

@@ -452,7 +452,7 @@ export default class EventStore {
   }
 
   bet = async () => {
-    const { naka: { checkLoginAndPopup } } = this.app;
+    const { naka: { checkLoginAndPopup }, ui: { toggleHistoryNeedUpdate }, global: { toggleBalanceNeedUpdate } } = this.app;
     if (!checkLoginAndPopup()) return;
 
     await this.app.tx.executeBet({
@@ -463,11 +463,12 @@ export default class EventStore {
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
     this.toggleEventNeedUpdate();
-    this.app.global.toggleBalanceNeedUpdate();
+    toggleBalanceNeedUpdate();
+    toggleHistoryNeedUpdate();
   }
 
   set = async () => {
-    const { naka: { checkLoginAndPopup } } = this.app;
+    const { naka: { checkLoginAndPopup }, ui: { toggleHistoryNeedUpdate }, global: { toggleBalanceNeedUpdate } } = this.app;
     if (!checkLoginAndPopup()) return;
 
     await this.app.tx.executeSetResult({
@@ -478,11 +479,12 @@ export default class EventStore {
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
     this.toggleEventNeedUpdate();
-    this.app.global.toggleBalanceNeedUpdate();
+    toggleBalanceNeedUpdate();
+    toggleHistoryNeedUpdate();
   }
 
   vote = async () => {
-    const { naka: { checkLoginAndPopup } } = this.app;
+    const { naka: { checkLoginAndPopup }, ui: { toggleHistoryNeedUpdate }, global: { toggleBalanceNeedUpdate } } = this.app;
     if (!checkLoginAndPopup()) return;
 
     await this.app.tx.executeVote({
@@ -493,10 +495,13 @@ export default class EventStore {
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
     this.toggleEventNeedUpdate();
-    this.app.global.toggleBalanceNeedUpdate();
+    toggleBalanceNeedUpdate();
+    toggleHistoryNeedUpdate();
   }
 
   withdraw = async () => {
+    const { naka: { checkLoginAndPopup }, ui: { toggleHistoryNeedUpdate }, global: { toggleBalanceNeedUpdate } } = this.app;
+    if (!checkLoginAndPopup()) return;
     await this.app.tx.executeWithdraw({
       eventAddress: this.event.address,
       winningAmount: decimalToSatoshi(this.nbotWinnings),
@@ -504,6 +509,7 @@ export default class EventStore {
       version: this.event.version,
     });
     this.toggleEventNeedUpdate();
-    this.app.global.toggleBalanceNeedUpdate();
+    toggleBalanceNeedUpdate();
+    toggleHistoryNeedUpdate();
   }
 }

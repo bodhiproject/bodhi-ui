@@ -2,7 +2,7 @@ import { observable, action, reaction, runInAction } from 'mobx';
 import { filter, uniqBy } from 'lodash';
 import logger from 'loglevel';
 import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
-import { transactions, resultSets } from '../network/graphql/queries';
+import { transactions, resultSets, pendingTransactions } from '../network/graphql/queries';
 
 const EVENT_HISTORY_LIMIT = 10;
 const EVENT_DETAIL_HISTORY_LIMIT = 5;
@@ -30,6 +30,7 @@ const INIT_VALUES = {
   limit: 0,
   updating: false,
   prevTxLen: 0,
+  pendingTransactions: [],
 };
 const HISTORY_TYPES = {
   ALL_TRANSACTIONS: 0,
@@ -64,6 +65,7 @@ export default class {
   @observable resultSkip = INIT_VALUES.resultSkip;
 
   prevTxLen = INIT_VALUES.prevTxLen;
+  @observable pendingTransactions = INIT_VALUES.pendingTransactions;
 
   constructor(app) {
     this.app = app;
@@ -84,10 +86,8 @@ export default class {
         const { ui: { toggleHistoryNeedUpdate, ifHistoryNeedUpdate } } = this.app;
         if (!this.updating && ifHistoryNeedUpdate) {
           await this.update();
-          if (this.prevTxLen !== this.transactions.length) {
-            // expecting new create event tx entry
+          if (this.pendingTransactions.length === 0) {
             toggleHistoryNeedUpdate();
-            this.setPrevTxLength();
           }
         }
       },
@@ -207,6 +207,7 @@ export default class {
       }
       const filters = { transactorAddress: account };
       const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
+      this.pendingTransactions = await this.fetchPendingHistory(filters);
       this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
     } else if (location === Routes.EVENT || location === Routes.EVENT_HISTORY) {
       if (!address) {
@@ -216,6 +217,7 @@ export default class {
 
       const filters = { eventAddress: address }; // for all txs
       let newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
+      this.pendingTransactions = await this.fetchPendingHistory({ eventAddress: address, transactorAddress: account });
       this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
 
       newTxs = await this.fetchMyHistory(this.limit, 0, 0, 0, 0, 0, true); // for my txs
@@ -224,7 +226,7 @@ export default class {
       newTxs = await this.fetchResultHistory(this.limit, 0, true);
       this.resultSetsHistory = this.updateTxs(this.resultSetsHistory, newTxs, HISTORY_TYPES.RESULT_SET_HISTORY);
     }
-
+    this.transactions = [...this.pendingTransactions, ...this.transactions];
     this.updating = false;
   }
 
@@ -244,14 +246,16 @@ export default class {
         this.loaded = true;
         return;
       }
-      await this.loadFirstTransactions({ transactorAddress: account });
+      const filters = { transactorAddress: account };
+      await this.loadFirstTransactions(filters);
+      this.pendingTransactions = await this.fetchPendingHistory(filters);
       this.setPrevTxLength();
     } else if (location === Routes.EVENT) {
       if (!address) return;
 
       this.limit = EVENT_DETAIL_HISTORY_LIMIT;
       await this.loadFirstTransactions({ eventAddress: address }); // for all txs
-
+      this.pendingTransactions = await this.fetchPendingHistory({ eventAddress: address, transactorAddress: account });
       this.myTransactions = await this.fetchMyHistory(); // for my txs
 
       // load result history
@@ -261,12 +265,13 @@ export default class {
 
       this.limit = EVENT_HISTORY_LIMIT;
       await this.loadFirstTransactions({ eventAddress: address }); // for all txs
-
+      this.pendingTransactions = await this.fetchPendingHistory({ eventAddress: address, transactorAddress: account });
       this.myTransactions = await this.fetchMyHistory(); // for my txs
 
       // load result history
       this.resultSetsHistory = await this.fetchResultHistory();
     }
+    this.transactions = [...this.pendingTransactions, ...this.transactions];
   }
 
   /**
@@ -462,5 +467,18 @@ export default class {
       return items;
     }
     return INIT_VALUES.resultSetsHistory;
+  }
+
+  /**
+   * Gets the pending tx history via API call.
+   * @return {[Transaction]} Tx array of the query.
+   */
+  fetchPendingHistory = async (filters) => {
+    if (!filters.transactorAddress) return INIT_VALUES.pendingTransactions;
+    const { graphqlClient } = this.app;
+
+    const res = await pendingTransactions(graphqlClient, { filter: filters });
+
+    return res;
   }
 }
