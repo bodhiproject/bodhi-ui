@@ -20,11 +20,12 @@ const styles = (theme) => ({
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
-    lineHeight: '3em',
+    lineHeight: '1.5',
     paddingLeft: theme.padding.space2X.px,
     color: '#fe0672',
     fontSize: '1.05rem',
     fontWeight: '400',
+    fontFamily: 'Noto Sans TC, sans-serif',
   },
   eventOptionNum: {
     background: theme.palette.background.grey,

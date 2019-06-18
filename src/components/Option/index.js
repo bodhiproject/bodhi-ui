@@ -18,6 +18,14 @@ const messages = defineMessages({
     id: 'invalid',
     defaultMessage: 'Invalid',
   },
+  odds: {
+    id: 'str.odds',
+    defaultMessage: 'Odds: {value}',
+  },
+  notAvailable: {
+    id: 'str.notAvailable',
+    defaultMessage: 'N/A',
+  },
 });
 
 /**
@@ -41,7 +49,7 @@ export default class Option extends Component {
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
-    const { percent, userPercent, value, isBetting } = option;
+    const { percent, userPercent, value, isBetting, odds } = option;
 
     return (
       <div>
@@ -50,8 +58,13 @@ export default class Option extends Component {
             <div className={classes.textWrapper}>
               <div className={classes.overText}>
                 {name}
+                <br></br>
+                {`${toFixed(value)} NBOT`}
               </div>
-              <div className={classes.eventOptionProgressNum}>{`${toFixed(percent)}%`}<br></br><span>{`${toFixed(value)} NBOT`}</span></div>
+              <div className={classes.eventOptionProgressNum}>
+                {`${toFixed(percent)}%`}<br />
+                {intl.formatMessage(messages.odds, { value: odds ? toFixed(odds) : intl.formatMessage(messages.notAvailable) })}
+              </div>
             </div>
             <Progress
               color={isBetting ? 'primary' : 'secondary'}

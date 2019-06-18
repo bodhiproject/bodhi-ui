@@ -16,6 +16,7 @@ export default class Option {
   token
   idx
   isBetting
+  odds
 
   constructor(optionName, i, event) {
     this.idx = i;
@@ -31,6 +32,11 @@ export default class Option {
       this.percent = totalBalance === 0 ? totalBalance : _.round((this.amount / totalBalance) * 100, 2);
       this.userPercent = this.amount === 0 ? this.amount : _.round((event.userRoundBets[i] / this.amount) * this.percent, 2);
       this.userValue = event.userRoundBets[i];
+      if (this.value === 0) this.odds = undefined;
+      else {
+        const betRoundSum = _.sum(event.betRoundBets);
+        this.odds = 1 + (((betRoundSum - event.betRoundBets[i]) * (1 - (event.arbitrationRewardPercentage / 100))) / this.value);
+      }
     } else {
       this.isPrevResult = event.currentResultIndex === i;
       if (this.isPrevResult) {
