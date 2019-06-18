@@ -109,7 +109,7 @@ export default {
   generateOracle(params) {
     const currentUnix = moment.unix();
     const oracle = {
-      txid: cryptoRandomString(64), 
+      txid: cryptoRandomString(64),
       blockNum: randomInt(1, 1000),
       address: cryptoRandomString(40),
       topicAddress: cryptoRandomString(40),
