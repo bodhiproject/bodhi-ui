@@ -320,8 +320,11 @@ export async function withdrawableEvents(client, args) {
  */
 export async function bets(client, args) {
   const res = await new GraphQuery(client, QUERY_BETS, args).execute();
-  res.items = map(res.items, (bet) => new Bet(bet));
-  return res;
+  const tmp = {};
+  tmp.pageInfo = res.pageInfo;
+  tmp.totalCount = res.totalCount;
+  tmp.items = map(res.items, (bet) => new Bet(bet));
+  return tmp;
 }
 
 /**
@@ -347,8 +350,11 @@ export async function resultSets(client, args) {
  */
 export async function withdraws(client, args) {
   const res = await new GraphQuery(client, QUERY_WITHDRAWS, args).execute();
-  res.items = map(res.items, (withdraw) => new Withdraw(withdraw));
-  return res;
+  const tmp = {};
+  tmp.pageInfo = res.pageInfo;
+  tmp.totalCount = res.totalCount;
+  tmp.items = map(res.items, (withdraw) => new Withdraw(withdraw));
+  return tmp;
 }
 
 /**
@@ -360,9 +366,11 @@ export async function withdraws(client, args) {
  */
 export async function transactions(client, args) {
   const res = await new GraphQuery(client, QUERY_TRANSACTIONS, args).execute();
-
-  res.items = map(res.items, (tx) => new Transaction(tx));
-  return res;
+  const tmp = {};
+  tmp.items = map(res.items, (tx) => new Transaction(tx));
+  tmp.pageInfo = res.pageInfo;
+  tmp.totalCount = res.totalCount;
+  return tmp;
 }
 
 /**
