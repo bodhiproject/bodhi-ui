@@ -252,7 +252,7 @@
   "str.notAvailable": "N/A",
   "str.notEnoughNAKAAndNbot": "You don't have enough NAKA or NBOT",
   "str.notEnoughNbot": "You don't have enough NBOT",
-  "str.odds": "Odds: {value}",
+  "str.odds": "odds: {value}",
   "str.ok": "OK",
   "str.oldPassphrase": "OLD PASSPHRASE",
   "str.outcomes": "Outcomes",

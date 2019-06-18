@@ -20,7 +20,7 @@ const messages = defineMessages({
   },
   odds: {
     id: 'str.odds',
-    defaultMessage: 'Odds: {value}',
+    defaultMessage: 'odds: {value}',
   },
   notAvailable: {
     id: 'str.notAvailable',
