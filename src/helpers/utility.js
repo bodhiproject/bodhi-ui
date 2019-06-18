@@ -1,7 +1,7 @@
 import moment from 'moment';
 import numbro from 'numbro';
 import { EVENT_STATUS } from 'constants';
-import { isNaN, isFinite, isUndefined } from 'lodash';
+import { isNaN, isFinite, isUndefined, isNull } from 'lodash';
 import NP from 'number-precision';
 import { defineMessages } from 'react-intl';
 import { fromWei, isHexStrict, numberToHex, toBN } from 'web3-utils';
@@ -211,7 +211,7 @@ export function shortenAddress(text, maxLength) {
 }
 
 export function toFixed(num, isFullNumber) {
-  if (isUndefined(num)) return '';
+  if (isUndefined(num) || isNull(num)) return '';
   if (String(num).length === 0) return '';
   if (Number(num) !== 0 && !num) return '';
   if (isFullNumber) {
