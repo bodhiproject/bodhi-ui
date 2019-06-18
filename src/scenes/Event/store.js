@@ -383,7 +383,7 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if ([PRE_RESULT_SETTING, ORACLE_RESULT_SETTING].includes(status)
+    if (ORACLE_RESULT_SETTING === status
       && !isOpenResultSetting()
       && centralizedOracle.toLowerCase() !== wallet.currentAddress.toLowerCase()) {
       this.buttonDisabled = true;
