@@ -88,7 +88,7 @@
   "create.resultsMsg": "Result name cannot be empty.",
   "create.select": "Select",
   "create.title": "Title",
-  "create.validBetEnd": "Must be at least 30 minutes after Prediction Start Time",
+  "create.validBetEnd": "Must be at least 30 minutes after current time",
   "create.validResultSetEnd": "Must be at least 30 minutes after Result Setting Start Time",
   "create.validResultSetStart": "Must be greater than or equal to Prediction End Time",
   "create.xHoursForXNbot": "{hours} hours for {nbot} NBOT",

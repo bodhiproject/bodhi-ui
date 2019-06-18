@@ -17,7 +17,7 @@ const messages = defineMessages({
   },
   createValidBetEndMsg: {
     id: 'create.validBetEnd',
-    defaultMessage: 'Must be at least 30 minutes after Prediction Start Time',
+    defaultMessage: 'Must be at least 30 minutes after current time',
   },
   createValidResultSetStartMsg: {
     id: 'create.validResultSetStart',
@@ -59,7 +59,7 @@ const messages = defineMessages({
 
 const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
-const TIME_DELAY_FROM_NOW_SEC = 15 * 60;
+const TIME_DELAY_FROM_NOW_SEC = 0;
 const TIME_GAP_MIN_SEC = 24 * 60 * 60;
 const VALIDATE_TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
 
@@ -82,7 +82,7 @@ const INIT = {
   },
   resultSetting: {
     startTime: nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC),
-    endTime: nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2)),
+    endTime: nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 3)),
   },
   outcomes: ['', ''],
   resultSetter: '',
@@ -219,16 +219,7 @@ export default class CreateEventStore {
         }
       }
     );
-    // check date valiation when date changed
-    reaction(
-      () => this.prediction.startTime,
-      () => {
-        if (this.prediction.startTime - this.prediction.endTime > -TIME_GAP_MIN_SEC) {
-          this.prediction.endTime = moment.unix(this.prediction.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
-        }
-        this.validatePredictionStartTime();
-      }
-    );
+
     // check date valiation when date changed
     reaction(
       () => this.prediction.endTime,
@@ -243,8 +234,8 @@ export default class CreateEventStore {
     reaction(
       () => this.resultSetting.startTime,
       () => {
-        if (this.resultSetting.startTime - this.resultSetting.endTime > -TIME_GAP_MIN_SEC) {
-          this.resultSetting.endTime = moment.unix(this.resultSetting.startTime).add(TIME_GAP_MIN_SEC, 's').unix();
+        if (this.resultSetting.startTime - this.resultSetting.endTime > -2 * TIME_GAP_MIN_SEC) {
+          this.resultSetting.endTime = moment.unix(this.resultSetting.startTime).add(2 * TIME_GAP_MIN_SEC, 's').unix();
         }
         this.validateResultSettingStartTime();
       }
@@ -299,7 +290,7 @@ export default class CreateEventStore {
       this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
       this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
-      this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 2));
+      this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 3));
       this.creator = this.app.wallet.currentAddress;
       this.resultSetter = this.app.wallet.currentAddress;
       this.loaded = true;
@@ -420,15 +411,6 @@ export default class CreateEventStore {
   isBeforeNow = (valueUnix) => isUndefined(valueUnix) || moment().unix() > valueUnix
 
   @action
-  validatePredictionStartTime = () => {
-    if (this.isBeforeNow(this.prediction.startTime)) {
-      this.error.prediction.startTime = messages.createDatePastMsg.id;
-    } else {
-      this.error.prediction.startTime = '';
-    }
-  }
-
-  @action
   validatePredictionEndTime = () => {
     if (this.isBeforeNow(this.prediction.endTime)) {
       this.error.prediction.endTime = messages.createDatePastMsg.id;
@@ -507,7 +489,6 @@ export default class CreateEventStore {
   validateAll = () => {
     this.validateTitle();
     this.validateCreator();
-    this.validatePredictionStartTime();
     this.validatePredictionEndTime();
     this.validateResultSettingStartTime();
     this.validateResultSettingEndTime();
@@ -529,10 +510,8 @@ export default class CreateEventStore {
       name: this.title,
       results: this.outcomes,
       centralizedOracle: this.resultSetter,
-      betStartTime: this.prediction.startTime,
       betEndTime: this.prediction.endTime,
       resultSetStartTime: this.resultSetting.startTime,
-      resultSetEndTime: this.resultSetting.endTime,
       amountSatoshi: escrowAmountSatoshi,
       arbitrationOptionIndex: this.arbOptionSelected,
       arbitrationRewardPercentage: this.arbRewardPercent,
