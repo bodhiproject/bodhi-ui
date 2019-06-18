@@ -39,7 +39,7 @@ export default class PredictionPeriod extends Component {
         createEvent: {
           predictionPeriod,
           prediction: { startTime: storeStartTime, endTime: storeEndTime },
-          error: { prediction: { startTime: startTimeErr, endTime: endTimeErr } },
+          error: { prediction: { endTime: endTimeErr } },
         },
       },
     } = this.props;
@@ -55,12 +55,6 @@ export default class PredictionPeriod extends Component {
 
     return (
       <Section title={messages.createBetStartTimeMsg} note={predictionPeriod}>
-        <DateTimeCard
-          title={TimeCardTitle.START_TIME}
-          dateUnix={startTime}
-          error={startTimeErr}
-          onChange={this.onStartTimeChange}
-        />
         <DateTimeCard
           title={TimeCardTitle.END_TIME}
           dateUnix={endTime}
