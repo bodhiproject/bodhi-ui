@@ -59,7 +59,6 @@ const messages = defineMessages({
 
 const MAX_LEN_EVENTNAME_HEX = 640;
 const MAX_LEN_RESULT_HEX = 64;
-const TIME_DELAY_FROM_NOW_SEC = 0;
 const TIME_GAP_MIN_SEC = 24 * 60 * 60;
 const VALIDATE_TIME_GAP_MIN_SEC = isProduction() ? 30 * 60 : 2 * 60;
 
@@ -77,12 +76,12 @@ const INIT = {
   title: '',
   creator: '',
   prediction: {
-    startTime: nowPlus(TIME_DELAY_FROM_NOW_SEC),
-    endTime: nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC),
+    startTime: moment().unix(),
+    endTime: nowPlus(TIME_GAP_MIN_SEC),
   },
   resultSetting: {
-    startTime: nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC),
-    endTime: nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 3)),
+    startTime: nowPlus(TIME_GAP_MIN_SEC),
+    endTime: nowPlus(TIME_GAP_MIN_SEC * 3),
   },
   outcomes: ['', ''],
   resultSetter: '',
@@ -287,10 +286,10 @@ export default class CreateEventStore {
     this.constructArbOptions();
 
     runInAction(async () => {
-      this.prediction.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC);
-      this.prediction.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
-      this.resultSetting.startTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + TIME_GAP_MIN_SEC);
-      this.resultSetting.endTime = nowPlus(TIME_DELAY_FROM_NOW_SEC + (TIME_GAP_MIN_SEC * 3));
+      this.prediction.startTime = moment().unix();
+      this.prediction.endTime = nowPlus(TIME_GAP_MIN_SEC);
+      this.resultSetting.startTime = nowPlus(TIME_GAP_MIN_SEC);
+      this.resultSetting.endTime = nowPlus(TIME_GAP_MIN_SEC * 3);
       this.creator = this.app.wallet.currentAddress;
       this.resultSetter = this.app.wallet.currentAddress;
       this.loaded = true;
