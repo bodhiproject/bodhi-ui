@@ -72,8 +72,7 @@ export default class NakaStore {
       const data = await promisify(this.app.global.naka.eth.getBalance, [this.account]);
       this.balance = data.toString(10);
     }
-    // TODO: log error here if !account. should stop exec and try to retry until
-    // an account is found.
+    // TODO: log error here if !account.
 
     // Init network
     const { network } = this.app.global.naka.version;
@@ -82,11 +81,16 @@ export default class NakaStore {
     } else if (network === CHAIN_ID.TESTNET) {
       this.network = NETWORK.TESTNET;
     }
-    // TODO: log error here and should stop exec.
-    // what happens if CHAIN_ID doesnt match? shouldn't allow users to do anything
+    // TODO: log error here if network doesnt match
+    // what happens if CHAIN_ID doesnt match? shouldn't allow users to do any txs
     // since wrong network.
 
-    this.app.wallet.onNakaAccountChange({ loggedIn: this.loggedIn, network: this.network, address: this.account, balance: this.balance });
+    this.app.wallet.onNakaAccountChange({
+      loggedIn: this.loggedIn,
+      network: this.network,
+      address: this.account,
+      balance: this.balance,
+    });
   }
 
   @action
