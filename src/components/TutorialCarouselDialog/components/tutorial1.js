@@ -29,7 +29,7 @@ const messages = defineMessages({
   },
   tutorial1Content5Msg: {
     id: 'tutorial1.content5',
-    defaultMessage: 'If you send your public key (Naka address) to someone, they can send you NAKA or NBOT.',
+    defaultMessage: 'If you send your public key (Naka address) to someone, they can send you NBOT.',
   },
   tutorial1Content6Msg: {
     id: 'tutorial1.content6',
