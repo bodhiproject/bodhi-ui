@@ -93,6 +93,11 @@ export default class ArbitrationStore {
           ownerAddress: account,
           version: eventVersion,
         },
+        {
+          status: EVENT_STATUS.PRE_RESULT_SETTING,
+          ownerAddress: account,
+          version: eventVersion,
+        },
       ] };
       const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING };
       const res = await events(graphqlClient, {
