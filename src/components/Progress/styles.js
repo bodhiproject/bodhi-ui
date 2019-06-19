@@ -20,7 +20,7 @@ const styles = (theme) => ({
     backgroundImage: 'none !important',
   },
   barColorPrimary: {
-    backgroundColor: '#56baf8',
+    backgroundColor: '#25a6f6',
   },
   colorPrimary: {
     backgroundColor: '#87cefa',
