@@ -15,6 +15,7 @@ export default class Option {
   token
   idx
   isBetting
+  odds
 
   constructor(optionName, i, event) {
     this.idx = i;
@@ -31,6 +32,11 @@ export default class Option {
     this.userValue = event.userBetRoundBets[i];
     this.disabled = true;
     this.isBetting = true;
+    if (this.value === 0) this.odds = undefined;
+    else {
+      const betRoundSum = sum(event.betRoundBets);
+      this.odds = 1 + (((betRoundSum - event.betRoundBets[i]) * (1 - (event.arbitrationRewardPercentage / 100))) / this.value);
+    }
   }
 
   isExpanded = () => false
