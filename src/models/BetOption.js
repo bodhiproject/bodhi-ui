@@ -15,6 +15,7 @@ export default class Option {
   token
   idx
   isBetting
+  odds
 
   constructor(optionName, i, event) {
     this.idx = i;
