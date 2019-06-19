@@ -58,7 +58,7 @@ const textColorLightGrey = '#b3b3b3';
 const backgroundColorLight = '#f9f9f9';
 
 // Support Colors
-const supportColorRed100 = '#BE2828';
+const supportColorRed100 = '#DC8F98';
 const supportColorRed60 = '#D36E78';
 const supportColorRed30 = '#E8B6BC';
 const supportColorBlue100 = '#3F7FD5';

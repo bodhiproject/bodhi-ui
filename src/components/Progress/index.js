@@ -17,6 +17,7 @@ const Progress = ({ classes, invalid, className, ...props }) => (
       dashed: classes.dashed,
       colorPrimary: classes.colorPrimary,
       colorSecondary: classes.colorSecondary,
+      barColorPrimary: classes.barColorPrimary,
     }}
   />
 );
