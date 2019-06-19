@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import cx from 'classnames';
+import { Helmet } from 'react-helmet';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Button, Grid, Paper, withStyles } from '@material-ui/core';
 import {
@@ -233,6 +234,23 @@ export default class EventPage extends Component {
     );
   }
 
+  renderMetaData = () => {
+    const {
+      store: { eventPage, eventPage: { event: { betResults } } },
+    } = this.props;
+    let str = '';
+    for (let i = 1; i < betResults.length; i++) {
+      if (betResults[i].percent) {
+        str = `${str}${betResults[i].percent}% ${betResults[i].name}, `;
+      }
+    }
+    if (str !== '') str = str.slice(0, -2);
+    return (
+      <Helmet>
+        <title>{`${eventPage.eventName}${str === '' ? '' : `|Bodhi Prediction: ${str}`}`}</title>
+      </Helmet>);
+  }
+
 
   // Renders sections for withdraw status
   renderWithdrawContent = () => {
@@ -287,6 +305,7 @@ export default class EventPage extends Component {
             <HistoryTable />
           </ContentContainer>
           <Sidebar endTime={event.getEndTime()} />
+          {this.renderMetaData()}
         </PageContainer>
       </Fragment>
     );
