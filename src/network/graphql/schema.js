@@ -80,6 +80,7 @@ export const MULTIPLE_RESULTS_EVENT = `
   pendingTxs { ${PENDING_TRANSACTIONS} }
   roundBets { ${ROUND_BETS} }
   totalBets
+  withdrawnList
 `;
 
 export const PAGINATED_EVENTS = `

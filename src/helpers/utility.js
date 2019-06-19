@@ -221,7 +221,8 @@ export function toFixed(num, isFullNumber) {
 }
 
 export function getEventDesc(event, currentAddress) {
-  const { status, centralizedOracle } = event;
+  const { status, centralizedOracle, withdrawnList } = event;
+  if (withdrawnList.includes(currentAddress)) return 'withdrawn';
   switch (status) {
     case EVENT_STATUS.CREATED: return 'creating';
     case EVENT_STATUS.BETTING: return moment().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
