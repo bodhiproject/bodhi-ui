@@ -14,6 +14,7 @@ const INIT_VALUE = {
   nbotOwner: undefined,
   exchangeRate: undefined,
   prevBalance: 0,
+  userKnowWrongNetwork: false,
 };
 
 export default class WalletStore {
@@ -27,6 +28,7 @@ export default class WalletStore {
   @observable exchangeRate = INIT_VALUE.exchangeRate
   nbotContract = INIT_VALUE.nbotContract;
   prevBalance = INIT_VALUE.prevBalance;
+  userKnowWrongNetwork = INIT_VALUE.userKnowWrongNetwork;
   @computed get currentAddress() {
     return this.currentWalletAddress ? this.currentWalletAddress.address : '';
   }
@@ -67,7 +69,10 @@ export default class WalletStore {
 
     // Stop login if the chain network does not match
     if (network.toLowerCase() !== process.env.NETWORK) {
-      this.app.naka.openPopover('naka.loggedIntoWrongNetwork');
+      if (!this.userKnowWrongNetwork) {
+        this.app.naka.openPopover('naka.loggedIntoWrongNetwork');
+        this.userKnowWrongNetwork = true;
+      }
       return;
     }
 
