@@ -142,7 +142,7 @@ export default class CreateEventStore {
     if (!this.hasEnoughFee) {
       return {
         id: 'str.notEnoughNAKAAndNbot',
-        message: 'You don\'t have enough NAKA or NBOT',
+        message: 'You don\'t have enough NBOT',
       };
     }
     return {};
