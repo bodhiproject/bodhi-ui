@@ -10,6 +10,7 @@ import {
   NoWalletPrompt,
 } from 'components';
 import { Routes } from 'constants';
+import { Helmet } from 'react-helmet';
 
 import styles from './styles';
 import AppRouter from './router';
@@ -22,6 +23,9 @@ const App = observer(({ classes, match: { url }, store, store: { ui } }) => (
           <AppRouter url={url} />
         </div>
         <BottomBar />
+        <Helmet>
+          <title>Bodhi Prediction Market</title>
+        </Helmet>
         {ui.location === Routes.PREDICTION && <TutorialCarouselDialog />}
         <GlobalSnackbar />
         <GlobalDialog />
