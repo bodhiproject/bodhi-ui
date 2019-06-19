@@ -19,8 +19,11 @@ const styles = (theme) => ({
     backgroundColor: 'white !important',
     backgroundImage: 'none !important',
   },
+  barColorPrimary: {
+    backgroundColor: '#56baf8',
+  },
   colorPrimary: {
-    backgroundColor: '#C4C5FD',
+    backgroundColor: '#87cefa',
   },
   colorSecondary: {
     backgroundColor: '#a7f0f2',
