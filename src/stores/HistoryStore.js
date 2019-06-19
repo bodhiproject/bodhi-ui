@@ -193,6 +193,7 @@ export default class {
       const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.pendingTransactions = await this.fetchPendingHistory(filters);
       this.confirmedTransactions = this.updateTxs(this.confirmedTransactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+      this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
     } else if (location === Routes.EVENT || location === Routes.EVENT_HISTORY) {
       if (!address) {
         this.updating = false;
@@ -203,14 +204,14 @@ export default class {
       let newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.pendingTransactions = await this.fetchPendingHistory({ eventAddress: address, transactorAddress: account });
       this.confirmedTransactions = this.updateTxs(this.confirmedTransactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
-
+      this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
       newTxs = await this.fetchMyHistory(this.limit, 0, 0, 0, 0, 0, true); // for my txs
       this.myTransactions = this.updateTxs(this.myTransactions, newTxs, HISTORY_TYPES.MY_TRANSACTIONS);
       // load result history
       newTxs = await this.fetchResultHistory(this.limit, 0, true);
       this.resultSetsHistory = this.updateTxs(this.resultSetsHistory, newTxs, HISTORY_TYPES.RESULT_SET_HISTORY);
     }
-    this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
+
     this.updating = false;
   }
 
@@ -447,7 +448,6 @@ export default class {
     filters.txStatus = TransactionStatus.PENDING;
     const transactionSkips = { eventSkip: 0, betSkip: 0, resultSetSkip: 0, withdrawSkip: 0 };
     const res = await transactions(graphqlClient, { filter: filters, limit, transactionSkips });
-    console.log('TCL: fetchPendingHistory -> res', res);
 
     return res;
   }
