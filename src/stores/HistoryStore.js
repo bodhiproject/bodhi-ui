@@ -155,33 +155,18 @@ export default class {
   }
 
   updateTxs = (oldTxs, newTxs, type) => {
-    const pendings = oldTxs.filter(tx => tx.txStatus === TransactionStatus.PENDING);
-    // remove all pendings
-    oldTxs = oldTxs.filter(tx => pendings.filter(pending => pending.txid === tx.txid).length === 0);
-    // record txids for updating
-    const pendingTxids = new Map();
-    pendings.map(tx => pendingTxids.set(tx.txid, tx));
     const oldTxids = new Map();
     oldTxs.map(tx => oldTxids.set(tx.txid, tx));
     // search through newTxs
     let confirmedAddOns = [];
-    let pendingAddOns = [];
     const addOnTxids = new Map();
     newTxs.forEach(tx => {
       addOnTxids.set(tx.txid, tx);
-      if (pendingTxids.has(tx.txid)) {
-        if (tx.txStatus === TransactionStatus.PENDING) pendingAddOns = [...pendingAddOns, tx];
-        else if (tx.txStatus === TransactionStatus.SUCCESS) {
-          confirmedAddOns = [...confirmedAddOns, tx];
-          this.updateSkips(tx, type);
-        }
-      } else {
-        // new tx or old txs already has it
-        confirmedAddOns = [...confirmedAddOns, tx];
-        if (!oldTxids.has(tx.txid)) {
-          // new tx
-          this.updateSkips(tx, type);
-        }
+      // new tx or old txs already has it
+      confirmedAddOns = [...confirmedAddOns, tx];
+      if (!oldTxids.has(tx.txid)) {
+        // new tx
+        this.updateSkips(tx, type);
       }
     });
     // add back existing txs
@@ -207,7 +192,7 @@ export default class {
       const filters = { transactorAddress: account };
       const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.pendingTransactions = await this.fetchPendingHistory(filters);
-      this.confirmedTransactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+      this.confirmedTransactions = this.updateTxs(this.confirmedTransactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
     } else if (location === Routes.EVENT || location === Routes.EVENT_HISTORY) {
       if (!address) {
         this.updating = false;
@@ -217,7 +202,7 @@ export default class {
       const filters = { eventAddress: address }; // for all txs
       let newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.pendingTransactions = await this.fetchPendingHistory({ eventAddress: address, transactorAddress: account });
-      this.confirmedTransactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+      this.confirmedTransactions = this.updateTxs(this.confirmedTransactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
 
       newTxs = await this.fetchMyHistory(this.limit, 0, 0, 0, 0, 0, true); // for my txs
       this.myTransactions = this.updateTxs(this.myTransactions, newTxs, HISTORY_TYPES.MY_TRANSACTIONS);
