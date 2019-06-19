@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { AppProvider } from './appProvider';
 import { unregister } from './registerServiceWorker';
+import './logger';
 
 render(
   <AppProvider />,

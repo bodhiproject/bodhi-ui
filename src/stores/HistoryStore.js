@@ -1,5 +1,6 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import { filter, uniqBy } from 'lodash';
+import logger from 'loglevel';
 import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
 import { transactions, resultSets } from '../network/graphql/queries';
 
@@ -149,7 +150,7 @@ export default class {
         return;
       }
       default: {
-        console.error(`Invalid txType: ${txType}`); // eslint-disable-line
+        logger.error(`HistoryStore.updateSkips: Invalid txType: ${tx.txType}`);
       }
     }
   }

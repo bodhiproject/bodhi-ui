@@ -46,7 +46,6 @@ export default class EventCard extends Component {
     onClick: null,
   };
 
-
   get isWithdrawn() {
     const { event: { status, transactions } } = this.props;
     if (status !== WITHDRAWING) return false;
