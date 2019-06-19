@@ -50,6 +50,10 @@ const messages = defineMessages({
     id: 'oracle.setRemainingExplanation',
     defaultMessage: 'You can only stake up to the remaining Consensus Threshold amount.',
   },
+  bodhiPrediction: {
+    id: 'str.bodhiPrediction',
+    defaultMessage: 'Bodhi Prediction',
+  },
   creating: { id: 'card.creating', defaultMessage: 'Creating' },
   predictionComingSoon: { id: 'card.predictionComingSoon', defaultMessage: 'Prediction Coming Soon' },
   predictionInProgress: { id: 'card.predictionInProgress', defaultMessage: 'Prediction In Progress' },
@@ -236,6 +240,7 @@ export default class EventPage extends Component {
 
   renderMetaData = () => {
     const {
+      intl,
       store: { eventPage, eventPage: { event: { betResults } } },
     } = this.props;
     let str = '';
@@ -247,7 +252,7 @@ export default class EventPage extends Component {
     if (str !== '') str = str.slice(0, -2);
     return (
       <Helmet>
-        <title>{`${eventPage.eventName}${str === '' ? '' : `|Bodhi Prediction: ${str}`}`}</title>
+        <title>{`${eventPage.eventName}${str === '' ? '' : `|${intl.formatMessage(messages.bodhiPrediction)}: ${str}`}`}</title>
       </Helmet>);
   }
 

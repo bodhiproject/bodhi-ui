@@ -26,7 +26,7 @@ const TxSentDialog = ({ classes, store: { txSentDialog } }) => (
     </DialogContent>
     <DialogActions>
       <Button color="primary" onClick={() => txSentDialog.visible = false}>
-        <FormattedMessage id="str.ok" defaultMessage="Ok" />
+        <FormattedMessage id="str.ok" defaultMessage="OK" />
       </Button>
     </DialogActions>
   </Dialog>
