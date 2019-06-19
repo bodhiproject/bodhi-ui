@@ -73,9 +73,6 @@ export default class MultipleResultsEvent {
 
   isPending = () => Boolean(!!this.pendingTxs && this.pendingTxs.total && this.pendingTxs.total > 0);
 
-  isUpcoming = (address) => [EVENT_STATUS.PRE_RESULT_SETTING, EVENT_STATUS.ORACLE_RESULT_SETTING].includes(this.status)
-    && address !== this.ownerAddress;
-
   isOpenResultSetting = () => this.status === EVENT_STATUS.OPEN_RESULT_SETTING;
 
   getEndTime = () => {
