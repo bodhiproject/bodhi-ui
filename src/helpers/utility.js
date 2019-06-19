@@ -2,6 +2,7 @@ import moment from 'moment';
 import numbro from 'numbro';
 import { EVENT_STATUS } from 'constants';
 import { isNaN, isFinite, isUndefined } from 'lodash';
+import NP from 'number-precision';
 import { defineMessages } from 'react-intl';
 import { fromWei, isHexStrict, numberToHex, toBN } from 'web3-utils';
 import { getIntlProvider } from './i18nUtil';
@@ -57,7 +58,7 @@ export function decimalToSatoshi(number) {
   const toStringNumber = Number(number).toFixed(8);
   const splitArr = toStringNumber.split('.');
   const integerPart = splitArr[0];
-  const decimalPart = splitArr.length > 1 ? Number(`.${splitArr[1]}`) * SATOSHI_CONVERSION : 0;
+  const decimalPart = splitArr.length > 1 ? NP.times(Number(`.${splitArr[1]}`), SATOSHI_CONVERSION) : 0;
   const conversionBN = toBN(SATOSHI_CONVERSION);
   return toBN(integerPart).mul(conversionBN).add(toBN(decimalPart)).toString(10);
 }
@@ -85,8 +86,8 @@ export function satoshiToDecimal(number) {
   const conversionBN = toBN(SATOSHI_CONVERSION);
   const integerPart = bn.div(conversionBN).toNumber();
   const decimalPartBN = bn.sub(conversionBN.mul(toBN(integerPart)));
-  const decimalPart = decimalPartBN.toNumber() / SATOSHI_CONVERSION;
-  return integerPart + decimalPart;
+  const decimalPart = NP.divide(decimalPartBN.toNumber(), SATOSHI_CONVERSION);
+  return NP.plus(integerPart, decimalPart);
 }
 
 /**
