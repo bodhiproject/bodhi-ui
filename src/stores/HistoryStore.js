@@ -1,7 +1,7 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import { filter, uniqBy } from 'lodash';
 import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
-import { transactions, resultSets, pendingTransactions } from '../network/graphql/queries';
+import { transactions, resultSets } from '../network/graphql/queries';
 
 const EVENT_HISTORY_LIMIT = 10;
 const EVENT_DETAIL_HISTORY_LIMIT = 5;
@@ -29,6 +29,7 @@ const INIT_VALUES = {
   limit: 0,
   updating: false,
   pendingTransactions: [],
+  confirmedTransactions: [],
 };
 const HISTORY_TYPES = {
   ALL_TRANSACTIONS: 0,
@@ -63,6 +64,7 @@ export default class {
   @observable resultSkip = INIT_VALUES.resultSkip;
 
   @observable pendingTransactions = INIT_VALUES.pendingTransactions;
+  @observable confirmedTransactions = INIT_VALUES.confirmedTransactions;
 
   constructor(app) {
     this.app = app;
@@ -205,7 +207,7 @@ export default class {
       const filters = { transactorAddress: account };
       const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.pendingTransactions = await this.fetchPendingHistory(filters);
-      this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+      this.confirmedTransactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
     } else if (location === Routes.EVENT || location === Routes.EVENT_HISTORY) {
       if (!address) {
         this.updating = false;
@@ -215,7 +217,7 @@ export default class {
       const filters = { eventAddress: address }; // for all txs
       let newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
       this.pendingTransactions = await this.fetchPendingHistory({ eventAddress: address, transactorAddress: account });
-      this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+      this.confirmedTransactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
 
       newTxs = await this.fetchMyHistory(this.limit, 0, 0, 0, 0, 0, true); // for my txs
       this.myTransactions = this.updateTxs(this.myTransactions, newTxs, HISTORY_TYPES.MY_TRANSACTIONS);
@@ -223,7 +225,7 @@ export default class {
       newTxs = await this.fetchResultHistory(this.limit, 0, true);
       this.resultSetsHistory = this.updateTxs(this.resultSetsHistory, newTxs, HISTORY_TYPES.RESULT_SET_HISTORY);
     }
-    this.transactions = [...this.pendingTransactions, ...this.transactions];
+    this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
     this.updating = false;
   }
 
@@ -264,7 +266,7 @@ export default class {
       // load result history
       this.resultSetsHistory = await this.fetchResultHistory();
     }
-    this.transactions = [...this.pendingTransactions, ...this.transactions];
+    this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
   }
 
   /**
@@ -272,11 +274,9 @@ export default class {
    */
   @action
   loadFirstTransactions = async (filters) => {
-    this.transactions = await this.fetchHistory(filters);
-
-    runInAction(() => {
-      this.loaded = true;
-    });
+    this.confirmedTransactions = await this.fetchHistory(filters);
+    this.transactions = [...this.confirmedTransactions];
+    this.loaded = true;
   }
 
   /**
@@ -306,8 +306,9 @@ export default class {
         const moreTxs = await this.fetchHistory(filters);
 
         runInAction(() => {
-          this.transactions = [...this.transactions, ...moreTxs];
-          this.transactions = uniqBy(this.transactions, 'txid');
+          this.confirmedTransactions = [...this.confirmedTransactions, ...moreTxs];
+          this.confirmedTransactions = uniqBy(this.confirmedTransactions, 'txid');
+          this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
           this.loadingMore = false; // stop showing the loading icon
         });
       } catch (e) {
@@ -373,12 +374,10 @@ export default class {
     const { graphqlClient } = this.app;
 
     const transactionSkips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
-
+    filters.txStatus = TransactionStatus.SUCCESS;
     const res = await transactions(graphqlClient, { filter: filters, limit, skip, transactionSkips });
 
     const { items, pageInfo } = res;
-    const pending = filter(items, { txStatus: TransactionStatus.PENDING });
-    const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
 
     if (pageInfo && !updating) {
       this.hasMore = pageInfo.hasNextPage;
@@ -388,7 +387,7 @@ export default class {
       this.withdrawSkip = pageInfo.nextTransactionSkips.nextWithdrawSkip;
     } else if (!pageInfo && !updating) this.hasMore = false;
 
-    return [...pending, ...confirmed];
+    return items;
   }
 
   /**
@@ -456,11 +455,14 @@ export default class {
    * Gets the pending tx history via API call.
    * @return {[Transaction]} Tx array of the query.
    */
-  fetchPendingHistory = async (filters) => {
+  fetchPendingHistory = async (filters, limit = this.limit) => {
     if (!filters.transactorAddress) return INIT_VALUES.pendingTransactions;
     const { graphqlClient } = this.app;
 
-    const res = await pendingTransactions(graphqlClient, { filter: filters });
+    filters.txStatus = TransactionStatus.PENDING;
+    const transactionSkips = { eventSkip: 0, betSkip: 0, resultSetSkip: 0, withdrawSkip: 0 };
+    const res = await transactions(graphqlClient, { filter: filters, limit, transactionSkips });
+    console.log('TCL: fetchPendingHistory -> res', res);
 
     return res;
   }

@@ -140,46 +140,42 @@ export const PAGINATED_WITHDRAWS = `
   items { ${WITHDRAW} }
 `;
 
-export const TRANSACTIONS = `
-  ${ITRANSACTION}
-  ... on MultipleResultsEvent {
-    address
-    ownerAddress
-    name
-    escrowAmount
-  }
-  ... on Bet {
-    eventAddress
-    betterAddress
-    resultIndex
-    amount
-    eventRound
-    resultName
-    eventName
-  }
-  ... on ResultSet {
-    eventAddress
-    centralizedOracleAddress
-    resultIndex
-    amount
-    eventRound
-    resultName
-    eventName
-  }
-  ... on Withdraw {
-    eventAddress
-    winnerAddress
-    winningAmount
-    escrowWithdrawAmount
-    eventName
-  }
-`;
-
 export const PAGINATED_TRANSACTIONS = `
   totalCount
   pageInfo { ${PAGE_INFO} }
   items {
-    ${TRANSACTIONS}
+    ${ITRANSACTION}
+    ... on MultipleResultsEvent {
+      address
+      ownerAddress
+      name
+      escrowAmount
+    }
+    ... on Bet {
+      eventAddress
+      betterAddress
+      resultIndex
+      amount
+      eventRound
+      resultName
+      eventName
+    }
+    ... on ResultSet {
+      eventAddress
+      centralizedOracleAddress
+      resultIndex
+      amount
+      eventRound
+      resultName
+      eventName
+    }
+    ... on Withdraw {
+      eventAddress
+      winnerAddress
+      winningAmount
+      escrowWithdrawAmount
+      eventName
+    }
   }
 `;
 
