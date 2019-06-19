@@ -61,7 +61,6 @@ describe('MultipleResultsEvent', () => {
       expect(oracle.endTime).toBe('20');
       expect(oracle.options.length).toBe(input.options.length);
 
-      expect(oracle.isUpcoming).not.toBeTruthy();
       expect(oracle.isPending).not.toBeTruthy();
       expect(oracle.isArchived).not.toBeTruthy();
       expect(oracle.isOpenResultSetting).not.toBeTruthy();
@@ -84,7 +83,6 @@ describe('MultipleResultsEvent', () => {
       expect(oracle.endTime).toBe('20');
       expect(oracle.options.length).toBe(input.options.length);
 
-      expect(oracle.isUpcoming).not.toBeTruthy();
       expect(oracle.unconfirmed).toBeTruthy();
       expect(oracle.isPending).toBeTruthy();
       expect(oracle.isArchived).not.toBeTruthy();
@@ -107,7 +105,6 @@ describe('MultipleResultsEvent', () => {
       expect(oracle.endTime).toBe('10');
       expect(oracle.options.length).toBe(input.options.length);
 
-      expect(oracle.isUpcoming).not.toBeTruthy();
       expect(oracle.unconfirmed).not.toBeTruthy();
       expect(oracle.isPending).not.toBeTruthy();
       expect(oracle.isArchived).not.toBeTruthy();
@@ -133,7 +130,6 @@ describe('MultipleResultsEvent', () => {
       expect(oracle.endTime).toBe('20');
       expect(oracle.options.length).toBe(input.options.length);
 
-      expect(oracle.isUpcoming).not.toBeTruthy();
       expect(oracle.unconfirmed).not.toBeTruthy();
       expect(oracle.isPending).not.toBeTruthy();
       expect(oracle.isArchived).toBeTruthy();
