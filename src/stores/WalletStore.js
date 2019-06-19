@@ -74,8 +74,9 @@ export default class WalletStore {
     this.nbotContract = window.naka.eth.contract(NakaBodhiToken().abi)
       .at(NakaBodhiToken()[network.toLowerCase()]);
 
-    // If setting Naka Wallet's account for the first time or the address changes, fetch the NBOT balance right away.
-    // After the initial NBOT balance fetch, it will refetch on every new block.
+    // If setting Naka Wallet's account for the first time or the address changes,
+    // fetch the NBOT balance right away. After the initial NBOT balance fetch,
+    // it will refetch on every new block.
     const fetchInitNbotBalance = isEmpty(this.addresses);
 
     const index = findIndex(this.addresses, { address });
@@ -106,11 +107,6 @@ export default class WalletStore {
     this.prevBalance = this.currentBalance;
   }
 
-  @action
-  fetchNbotOwner = async () => {
-    this.nbotOwner = await promisify(this.nbotContract.owner, []);
-  }
-
   /**
    * Calls the BodhiToken contract to get the NBOT balance and sets the balance in the addresses.
    * @param {string} address Address to check the NBOT balance of.
@@ -137,6 +133,11 @@ export default class WalletStore {
     } catch (err) {
       console.error(`Error getting NBOT balance for ${address}: ${err.message}`); // eslint-disable-line
     }
+  }
+
+  @action
+  fetchNbotOwner = async () => {
+    this.nbotOwner = await promisify(this.nbotContract.owner, []);
   }
 
   @action
