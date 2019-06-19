@@ -12,7 +12,7 @@ import { getEventDesc } from '../../helpers/utility';
 import EventWarning from '../EventWarning';
 import styles from './styles';
 
-const { CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
+const { WITHDRAWING } = EVENT_STATUS;
 const messages = defineMessages({
   pending: { id: 'str.pending', defaultMessage: 'Pending' },
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
@@ -45,18 +45,6 @@ export default class EventCard extends Component {
     onClick: null,
   };
 
-  getButtonText = () => {
-    const { status } = this.props.event;
-    switch (status) {
-      case CREATED:
-      case BETTING: return messages.placeBet;
-      case ORACLE_RESULT_SETTING:
-      case OPEN_RESULT_SETTING: return messages.setResult;
-      case ARBITRATION: return messages.arbitrate;
-      case WITHDRAWING: return messages.withdraw;
-      default: console.error(`Unhandled status: ${status}`); // eslint-disable-line
-    }
-  }
 
   get isWithdrawn() {
     const { event: { status, transactions } } = this.props;
@@ -73,7 +61,7 @@ export default class EventCard extends Component {
     return (
       <Fragment>
         {asOptions.map((option, i) => (
-          (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== asOptions.length - 1)) &&
+          (status !== EVENT_STATUS.BETTING || ([EVENT_STATUS.PRE_BETTING, EVENT_STATUS.BETTING].includes(status) && i !== asOptions.length - 1)) &&
           <Option
             key={i}
             option={option}

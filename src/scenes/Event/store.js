@@ -13,7 +13,7 @@ import {
 } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
-const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
+const { PRE_BETTING, BETTING, PRE_RESULT_SETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const INIT = {
   loading: true,
   event: undefined,
@@ -69,12 +69,12 @@ export default class EventStore {
   }
 
   @computed get isBetting() {
-    return this.event && this.event.status === BETTING;
+    return this.event && [PRE_BETTING, BETTING].includes(this.event.status);
   }
 
   @computed get isResultSetting() {
     return this.event
-      && [ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
+      && [PRE_RESULT_SETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
   }
 
   @computed get isArbitration() {
@@ -367,8 +367,7 @@ export default class EventStore {
     }
 
     // Has not reached betting start time
-    if (status === BETTING
-      && currBlockTime.isBefore(moment.unix(this.event.betStartTime))) {
+    if (status === PRE_BETTING) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
@@ -376,8 +375,7 @@ export default class EventStore {
     }
 
     // Has not reached result setting start time
-    if ((status === ORACLE_RESULT_SETTING)
-      && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
+    if (status === PRE_RESULT_SETTING) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.setStartTimeDisabledText';
@@ -385,7 +383,7 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if (status === ORACLE_RESULT_SETTING
+    if (ORACLE_RESULT_SETTING === status
       && !isOpenResultSetting()
       && centralizedOracle.toLowerCase() !== wallet.currentAddress.toLowerCase()) {
       this.buttonDisabled = true;
