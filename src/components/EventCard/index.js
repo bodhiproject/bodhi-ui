@@ -28,6 +28,7 @@ const messages = defineMessages({
   resultSettingInProgress: { id: 'card.resultSettingInProgress', defaultMessage: 'Result Setting In Progress' },
   arbitrationInProgress: { id: 'card.arbitrationInProgress', defaultMessage: 'Arbitration In Progress' },
   finished: { id: 'card.finished', defaultMessage: 'Finished' },
+  withdrawn: { id: 'str.withdrawn', defaultMessage: 'Withdrawn' },
 });
 
 @injectIntl
