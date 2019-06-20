@@ -289,7 +289,7 @@ export default class CreateEventStore {
       this.prediction.startTime = moment().unix();
       this.prediction.endTime = nowPlus(TIME_GAP_MIN_SEC);
       this.resultSetting.startTime = nowPlus(TIME_GAP_MIN_SEC);
-      this.resultSetting.endTime = nowPlus(TIME_GAP_MIN_SEC * 3);
+      this.resultSetting.endTime = moment.unix(this.resultSetting.startTime).add(TIME_GAP_MIN_SEC * 2, 's').unix();
       this.creator = this.app.wallet.currentAddress;
       this.resultSetter = this.app.wallet.currentAddress;
       this.loaded = true;

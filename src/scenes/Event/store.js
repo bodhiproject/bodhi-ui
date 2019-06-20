@@ -1,5 +1,4 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
-import moment from 'moment';
 import { sum, isUndefined } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
@@ -345,9 +344,8 @@ export default class EventStore {
   @action
   disableEventActionsIfNecessary = () => {
     if (!this.event) return;
-    const { status, centralizedOracle, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.event;
-    const { global: { syncBlockTime }, wallet } = this.app;
-    const currBlockTime = moment.unix(syncBlockTime);
+    const { status, centralizedOracle, isOpenResultSetting, consensusThreshold } = this.event;
+    const { wallet } = this.app;
     const currentWalletNbot = wallet.currentWalletAddress ? wallet.currentWalletAddress.nbot : -1; // when no wallet, still can click on action buttons
 
     this.buttonDisabled = false;
