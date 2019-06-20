@@ -6,7 +6,7 @@ export default (theme) => ({
     right: 0,
     padding: `${theme.padding.spaceX.px} ${theme.padding.space3X.px}`,
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
     [theme.breakpoints.down('sm')]: {

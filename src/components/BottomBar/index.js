@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { inject, observer } from 'mobx-react';
-import { Box, Paper, Typography, withStyles, Hidden } from '@material-ui/core';
+import { Box, Paper, Typography, withStyles } from '@material-ui/core';
 import { CheckCircle, RemoveCircle } from '@material-ui/icons';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Token } from 'constants';
@@ -35,77 +35,69 @@ export default class BottomBar extends Component {
 
     return (
       <Paper className={classes.paper}>
-        <Box display="flex" justifyContent="flex-start">
-          <NetworkConnection online={online} loggedIn={loggedIn} slicedAddress={slicedAddress} />
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <NetworkConnection online={online} loggedIn={loggedIn} />
+          <BlockTime blockTime={syncBlockTime} />
         </Box>
-        <Box display="flex" justifyContent="flex-end">
-          <Info blockTime={syncBlockTime} lastAddressWithdrawLimit={lastAddressWithdrawLimit} />
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <WalletStatus loggedIn={loggedIn} slicedAddress={slicedAddress} />
+          <Balance lastAddressWithdrawLimit={lastAddressWithdrawLimit} />
         </Box>
       </Paper>
     );
   }
 }
 
-const NetworkConnection = withStyles(styles)(({ classes, online, loggedIn, slicedAddress }) => (
-  <div>
-    <div className={classes.statusContainer}>
-      {online
-        ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
-        : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
-      }
-      <Typography variant="body2" className={cx(classes.bottomBarTxt, 'network')}>
-        <FormattedMessage id="bottomBar.network" defaultMessage="Network" />
-      </Typography>
-    </div>
-    <div className={classes.statusContainer}>
-      {loggedIn
-        ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
-        : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
-      }
-      <Typography variant="body2" className={classes.bottomBarTxt}>
-        <FormattedMessage id="bottomBar.wallet" defaultMessage="Wallet" />
-        {slicedAddress}
-      </Typography>
-    </div>
+const NetworkConnection = withStyles(styles)(({ classes, online }) => (
+  <div className={classes.statusContainer}>
+    {online
+      ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
+      : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
+    }
+    <Typography variant="body2" className={cx(classes.bottomBarTxt, 'network')}>
+      <FormattedMessage id="bottomBar.network" defaultMessage="Network" />
+    </Typography>
   </div>
 ));
 
-const Info = withStyles(styles)(({ classes, lastAddressWithdrawLimit, blockTime }) => (
-  <div>
-    <div className={classes.blockItemContainer}>
-      <Typography variant="body2" className={cx(classes.bottomBarTxt, 'blockNum')}>
-        <Hidden xsDown>
-          <span>
-            <FormattedMessage
-              id="bottomBar.blockTime"
-              defaultMessage="Current Block Time"
-            />
-            {`: ${getTime(blockTime)}`}
-          </span>
-        </Hidden>
-        <Hidden smUp>
-          <span>
-            <FormattedMessage
-              id="bottomBar.blockTime"
-              defaultMessage="Current Block Time"
-            />:
-            <br />
-            {`${getTime(blockTime)}`}
-          </span>
-        </Hidden>
-      </Typography>
-    </div>
-    <div className={classes.blockItemContainer}>
-      <Typography variant="body2" className={classes.bottomBarTxt}>
-        <span>
-          <FormattedMessage
-            id="bottomBar.nbotBalance"
-            defaultMessage="Balance"
-          />
-          {`: ${lastAddressWithdrawLimit.NBOT ? `${lastAddressWithdrawLimit.NBOT.toFixed(2, true)} ${Token.NBOT}` : '0.00'}`}
-        </span>
-      </Typography>
-    </div>
+const WalletStatus = withStyles(styles)(({ classes, loggedIn, slicedAddress }) => (
+  <div className={classes.statusContainer}>
+    {loggedIn
+      ? <CheckCircle className={cx(classes.statusIcon, 'online')} />
+      : <RemoveCircle className={cx(classes.statusIcon, 'offline')} />
+    }
+    <Typography variant="body2" className={classes.bottomBarTxt}>
+      <FormattedMessage id="bottomBar.wallet" defaultMessage="Wallet" />
+      {slicedAddress}
+    </Typography>
+  </div>
+));
+
+const BlockTime = withStyles(styles)(({ classes, blockTime }) => (
+  <div className={classes.blockItemContainer}>
+    <Typography variant="body2" className={cx(classes.bottomBarTxt, 'blockNum')}>
+      <span>
+        <FormattedMessage
+          id="bottomBar.blockTime"
+          defaultMessage="Current Block Time"
+        />
+        {`: ${getTime(blockTime)}`}
+      </span>
+    </Typography>
+  </div>
+));
+
+const Balance = withStyles(styles)(({ classes, lastAddressWithdrawLimit }) => (
+  <div className={classes.blockItemContainer}>
+    <Typography variant="body2" className={classes.bottomBarTxt}>
+      <span>
+        <FormattedMessage
+          id="bottomBar.nbotBalance"
+          defaultMessage="Balance"
+        />
+        {`: ${lastAddressWithdrawLimit.NBOT ? `${lastAddressWithdrawLimit.NBOT.toFixed(2, true)} ${Token.NBOT}` : '0.00'}`}
+      </span>
+    </Typography>
   </div>
 ));
 
