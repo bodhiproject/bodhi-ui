@@ -88,7 +88,7 @@ export const InstallNakaWalletPopover = withStyles(styles)(injectIntl(inject('st
                 color="primary"
                 onClick={() => naka.popoverOpen = false}
               >
-                <FormattedMessage id="str.ok" defaultMessage="Ok" />
+                <FormattedMessage id="str.ok" defaultMessage="OK" />
               </Button>
             ) : (
               <div>
