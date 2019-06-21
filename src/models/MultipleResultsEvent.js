@@ -1,4 +1,4 @@
-import { map } from 'lodash';
+import { map, isUndefined, isNull } from 'lodash';
 import { EVENT_STATUS } from 'constants';
 import { satoshiToDecimal } from '../helpers/utility';
 import Option from './Option';
@@ -40,6 +40,7 @@ export default class MultipleResultsEvent {
   totalBetRoundBets
   previousRoundUserBets
   previousRoundBets
+  withdrawnList // List of who have withdrawn
 
   // UI-specific vars
   localizedInvalid // for invalid option
@@ -69,6 +70,7 @@ export default class MultipleResultsEvent {
     this.results = event.results.map((result, i) => new Option(result, i, this));
     this.betResults = event.results.map((result, i) => new BetOption(result, i, this));
     this.url = `/event/${this.address ? this.address : this.txid}`;
+    if (isUndefined(this.withdrawnList) || isNull(this.withdrawnList)) this.withdrawnList = [];
   }
 
   isPending = () => Boolean(!!this.pendingTxs && this.pendingTxs.total && this.pendingTxs.total > 0);
