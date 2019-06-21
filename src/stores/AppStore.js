@@ -25,7 +25,6 @@ class AppStore {
   @observable graphqlClient = undefined;
   @observable loading = true;
   @observable sortBy = 'ASC' // TODO: have each store have their own sortBy
-  @observable clickCount = 0;
   global = {}
   ui = {}
   wallet = {}
