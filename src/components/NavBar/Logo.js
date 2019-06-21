@@ -6,13 +6,14 @@ import { Routes } from 'constants';
 import styles from './styles';
 import ImageLocaleWrapper from './components/ImageLocaleWrapper';
 
-const BodhiLogo = ({ classes }) => (
+const BodhiLogo = ({ classes, onClick }) => (
   <Link to={Routes.PREDICTION}>
     <ImageLocaleWrapper
       appliedLanguages={['zh-Hans-CN']}
       src="/images/bodhi-logo.svg"
       alt="bodhi-logo"
       className={classes.navBarLogo}
+      onClick={onClick}
     />
   </Link>
 );
