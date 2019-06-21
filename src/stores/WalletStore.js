@@ -1,5 +1,6 @@
 import { observable, action, computed } from 'mobx';
 import { isEmpty, findIndex } from 'lodash';
+import logger from 'loglevel';
 import { WalletAddress } from 'models';
 import promisify from 'js-promisify';
 import { satoshiToDecimal, weiToDecimal, numToHex } from '../helpers/utility';
@@ -79,8 +80,9 @@ export default class WalletStore {
     this.nbotContract = window.naka.eth.contract(NakaBodhiToken().abi)
       .at(NakaBodhiToken()[network.toLowerCase()]);
 
-    // If setting Naka Wallet's account for the first time or the address changes, fetch the NBOT balance right away.
-    // After the initial NBOT balance fetch, it will refetch on every new block.
+    // If setting Naka Wallet's account for the first time or the address changes,
+    // fetch the NBOT balance right away. After the initial NBOT balance fetch,
+    // it will refetch on every new block.
     const fetchInitNbotBalance = isEmpty(this.addresses);
 
     const index = findIndex(this.addresses, { address });
@@ -111,11 +113,6 @@ export default class WalletStore {
     this.prevBalance = this.currentBalance;
   }
 
-  @action
-  fetchNbotOwner = async () => {
-    this.nbotOwner = await promisify(this.nbotContract.owner, []);
-  }
-
   /**
    * Calls the BodhiToken contract to get the NBOT balance and sets the balance in the addresses.
    * @param {string} address Address to check the NBOT balance of.
@@ -140,7 +137,16 @@ export default class WalletStore {
         this.currentWalletAddress.nbot = nbot;
       }
     } catch (err) {
-      console.error(`Error getting NBOT balance for ${address}: ${err.message}`); // eslint-disable-line
+      logger.error(`WalletStore.fetchNbotBalance: ${address}`, err);
+    }
+  }
+
+  @action
+  fetchNbotOwner = async () => {
+    try {
+      this.nbotOwner = await promisify(this.nbotContract.owner, []);
+    } catch (err) {
+      logger.error('WalletStore.fetchNbotOwner', err);
     }
   }
 
@@ -148,12 +154,16 @@ export default class WalletStore {
   fetchExchangeRate = async () => {
     if (!this.nbotOwner) return;
 
-    const exchangeMethod = window.naka.eth.contract(TokenExchange().abi)
-      .at(TokenExchange()[this.app.naka.network.toLowerCase()]);
-    const rate = await promisify(exchangeMethod.getRate, [
-      NakaBodhiToken()[this.app.naka.network.toLowerCase()],
-      this.nbotOwner,
-    ]);
-    this.exchangeRate = rate.toString(16);
+    try {
+      const exchangeMethod = window.naka.eth.contract(TokenExchange().abi)
+        .at(TokenExchange()[this.app.naka.network.toLowerCase()]);
+      const rate = await promisify(exchangeMethod.getRate, [
+        NakaBodhiToken()[this.app.naka.network.toLowerCase()],
+        this.nbotOwner,
+      ]);
+      this.exchangeRate = rate.toString(16);
+    } catch (err) {
+      logger.error('WalletStore.fetchExchangeRate', err);
+    }
   }
 }

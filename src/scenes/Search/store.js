@@ -1,5 +1,6 @@
 import { isEmpty, filter, debounce } from 'lodash';
 import { observable, action, reaction } from 'mobx';
+import logger from 'loglevel';
 import { EVENT_STATUS, SortBy } from 'constants';
 import { searchEvents } from '../../network/graphql/queries';
 
@@ -79,7 +80,7 @@ export default class SearchStore {
       this.votes = filter(this.events, { status: EVENT_STATUS.ARBITRATION });
       this.withdraws = filter(this.events, { status: EVENT_STATUS.WITHDRAWING });
     } catch (err) {
-      console.error(err); // eslint-disable-line
+      logger.error('SearchStore.fetchEvents', err);
       this.resetEvents();
     }
 
