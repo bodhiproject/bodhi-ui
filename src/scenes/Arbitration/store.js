@@ -77,26 +77,25 @@ export default class ArbitrationStore {
       const {
         graphqlClient,
         naka: { account },
-        global: { eventVersion },
       } = this.app;
 
       const filter = { OR: [
         {
           status: EVENT_STATUS.ARBITRATION,
-          version: eventVersion,
+          versions: [5, 6],
         },
         {
           status: EVENT_STATUS.OPEN_RESULT_SETTING,
-          version: eventVersion,
+          versions: [5, 6],
         }, {
           status: EVENT_STATUS.ORACLE_RESULT_SETTING,
           ownerAddress: account,
-          version: eventVersion,
+          versions: [5, 6],
         },
         {
           status: EVENT_STATUS.PRE_RESULT_SETTING,
           ownerAddress: account,
-          version: eventVersion,
+          versions: [5, 6],
         },
       ] };
       const orderBy = { field: 'arbitrationEndTime', direction: SortBy.ASCENDING };

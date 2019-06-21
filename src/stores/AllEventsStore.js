@@ -71,10 +71,10 @@ export default class {
       const {
         graphqlClient,
         naka: { account },
-        global: { eventVersion },
       } = this.app;
 
-      const filter = { version: eventVersion };
+      const filter = { versions: [5, 6] };
+
       const orderBy = { field: 'blockNum', direction: SortBy.DESCENDING };
       const res = await events(graphqlClient, {
         filter,
