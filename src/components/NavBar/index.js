@@ -59,7 +59,7 @@ export default class NavBar extends Component {
               <BodhiLogo {...this.props} onClick={() => this.handleClickLogo()} />
               {
                 // eslint-disable-next-line
-                <audio style={{ visibility: 'hidden' }} src="/music/bgm.mp3" />
+                <audio className={classes.audio} src="/music/bgm.mp3" />
               }
               <Hidden xsDown>
                 <Prediction {...this.props} />
