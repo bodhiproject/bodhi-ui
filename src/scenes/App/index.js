@@ -31,6 +31,10 @@ const App = injectIntl(observer(({ classes, intl, match: { url }, store, store: 
           <AppRouter url={url} />
         </div>
         <BottomBar />
+        {
+          // eslint-disable-next-line
+          <audio style={{ visibility: 'hidden' }} src="/music/bgm.mp3" />
+        }
         <Helmet>
           <title>{intl.formatMessage(messages.bodhiPredictionMarket)}</title>
         </Helmet>

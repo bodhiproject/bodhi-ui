@@ -25,7 +25,7 @@ class AppStore {
   @observable graphqlClient = undefined;
   @observable loading = true;
   @observable sortBy = 'ASC' // TODO: have each store have their own sortBy
-
+  @observable clickCount = 0;
   global = {}
   ui = {}
   wallet = {}
@@ -49,6 +49,17 @@ class AppStore {
 
     // block content until all stores are initialized
     this.loading = true;
+    document.getElementsByTagName('html')[0].addEventListener('click', () => {
+      this.clickCount = this.clickCount + 1;
+      if (this.clickCount === 8) {
+        document.getElementsByTagName('audio')[0].play();
+      }
+      if (this.clickCount === 1) {
+        setTimeout(() => {
+          this.clickCount = 0;
+        }, 3000);
+      }
+    });
 
     this.router = new RouterStore();
     this.global = new GlobalStore(this);
