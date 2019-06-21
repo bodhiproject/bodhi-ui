@@ -7,8 +7,8 @@ import DateTimeCard from './DateTimeCard';
 
 const messages = defineMessages({
   createResultSetStartTimeMsg: {
-    id: 'create.resultSetPeriod',
-    defaultMessage: 'Result Setting Period',
+    id: 'create.resultSetStartTime',
+    defaultMessage: 'Result Setting Start Time',
   },
 });
 
@@ -37,7 +37,6 @@ export default class ResultSetPeriod extends Component {
     const {
       store: {
         createEvent: {
-          resultSettingPeriod,
           resultSetting: { startTime: storeStartTime, endTime: storeEndTime },
           error: { resultSetting: { startTime: startTimeErr } },
         },
@@ -56,7 +55,6 @@ export default class ResultSetPeriod extends Component {
     return (
       <Section
         title={messages.createResultSetStartTimeMsg}
-        note={resultSettingPeriod}
       >
         <DateTimeCard
           title={TimeCardTitle.START_TIME}
