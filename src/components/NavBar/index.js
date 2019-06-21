@@ -33,7 +33,7 @@ export default class NavBar extends Component {
     clearTimeout(timeout);
     const { clickCount } = this.state;
     this.setState({ clickCount: clickCount + 1 });
-    if (clickCount + 1 === 18) document.getElementsByTagName('audio')[0].play();
+    if (clickCount + 1 === 8) document.getElementsByTagName('audio')[0].play();
     timeout = setTimeout(() => this.setState({ clickCount: 0 }), 500);
   }
 
