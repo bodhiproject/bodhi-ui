@@ -22,6 +22,7 @@ const INIT_VALUES = {
   winnerHasMore: true,
   loadingMore: false,
   diaplayHasMore: true,
+  loading: false,
 };
 
 export default class {
@@ -41,6 +42,7 @@ export default class {
   @observable winnerHasMore = INIT_VALUES.winnerHasMore;
 
   @observable diaplayHasMore = INIT_VALUES.diaplayHasMore;
+  loading = INIT_VALUES.loading;
 
   constructor(app) {
     this.app = app;
@@ -68,12 +70,26 @@ export default class {
         }
       }
     );
+    reaction(
+      () => this.app.global.syncBlockNum,
+      async () => {
+        if (!this.loading && this.app.history.pendingTransactions.length !== 0) {
+          await this.loadFirst();
+        }
+      },
+    );
   }
 
   @action
   init = async () => {
     Object.assign(this, INIT_VALUES);
 
+    await this.loadFirst();
+  }
+
+  @action
+  loadFirst = async () => {
+    this.loading = true;
     const { ui: { location }, eventPage: { event } } = this.app;
     const address = event && event.address;
 
@@ -95,8 +111,10 @@ export default class {
     }
     await this.loadFirstLeaderboardBets(filters);
     await this.loadFirstBiggestWinners(filters);
+    this.loading = false;
     this.leaderboardDisplay = this.leaderboardBets;
     this.diaplayHasMore = this.hasMore;
+    this.activeStep = 0;
   }
 
   @action
@@ -193,25 +211,22 @@ export default class {
    * @return {[MostBet]} leaderboard array of the query.
    */
   fetchLeaderboardBets = async (filters = {}, limit = this.leaderboardLimit, skip = this.skip) => {
-    if (this.hasMore) {
-      const { graphqlClient } = this.app;
+    const { graphqlClient } = this.app;
 
-      let res;
-      if (isEmpty(filters)) {
-        res = await mostBets(graphqlClient, { limit, skip });
-      } else {
-        res = await mostBets(graphqlClient, { filter: filters, limit, skip });
-      }
-
-      const { items, pageInfo } = res;
-
-      if (pageInfo) {
-        this.hasMore = pageInfo.hasNextPage;
-      } else if (!pageInfo) this.hasMore = false;
-
-      return items;
+    let res;
+    if (isEmpty(filters)) {
+      res = await mostBets(graphqlClient, { limit, skip });
+    } else {
+      res = await mostBets(graphqlClient, { filter: filters, limit, skip });
     }
-    return INIT_VALUES.leaderboardBets;
+
+    const { items, pageInfo } = res;
+
+    if (pageInfo) {
+      this.hasMore = pageInfo.hasNextPage;
+    } else if (!pageInfo) this.hasMore = false;
+
+    return items;
   }
 
   /**
@@ -220,7 +235,7 @@ export default class {
    */
   fetchLeaderboardWinners = async (filters = {}, limit = this.leaderboardLimit, skip = this.winnerSkip) => {
     // Address is required for the request filters
-    if (this.winnerHasMore && !isEmpty(filters)) {
+    if (!isEmpty(filters)) {
       const { graphqlClient } = this.app;
 
       const res = await biggestWinners(graphqlClient, { filter: filters, limit, skip });

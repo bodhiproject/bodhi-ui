@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import cx from 'classnames';
-import moment from 'moment';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import { Typography, Grid, Paper, withStyles } from '@material-ui/core';
 import {
@@ -38,19 +37,6 @@ export default class EventHistory extends Component {
     this.props.store.history.init();
   }
 
-  getEventDesc = () => {
-    const { event, event: { status } } = this.props.store.eventPage;
-    switch (status) {
-      case EVENT_STATUS.CREATED: return 'creating';
-      case EVENT_STATUS.BETTING: return moment.unix().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
-      case EVENT_STATUS.ORACLE_RESULT_SETTING: return moment.unix().isBefore(moment.unix(event.resultSetEndTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
-      case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
-      case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
-      case EVENT_STATUS.WITHDRAWING: return 'finished';
-      default: throw Error(`Invalid status: ${this.status}`);
-    }
-  }
-
   renderTitle = () => {
     const {
       classes,
@@ -74,7 +60,7 @@ export default class EventHistory extends Component {
     return (
       <Grid className={classes.optionGrid}>
         {asOptions.map((option, i) => (
-          (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== asOptions.length - 1)) &&
+          (status !== EVENT_STATUS.BETTING || ([EVENT_STATUS.PRE_BETTING, EVENT_STATUS.BETTING].includes(status) && i !== asOptions.length - 1)) &&
           <Option
             key={i}
             option={option}

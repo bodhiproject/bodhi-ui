@@ -88,7 +88,7 @@
   "create.resultsMsg": "결과 이름은 비워 둘 수 없습니다.",
   "create.select": "Select",
   "create.title": "제목",
-  "create.validBetEnd": "예측 시작 시간 후 30분 이상이어야합니다.",
+  "create.validBetEnd": "현재 시간보다 적어도 30 분 이상이어야합니다.",
   "create.validResultSetEnd": "결과 설정 시작 시간 후 30분 이상이어야합니다.",
   "create.validResultSetStart": "예상 종료 시간보다 크거나 같아야합니다.",
   "create.xHoursForXNbot": "{hours} 시간 ...에 대한 {nbot} NBOT",

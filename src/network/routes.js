@@ -12,6 +12,7 @@ export const GRAPHQL = {
 };
 
 export const API = {
+  LOG_CLIENT_ERROR: `${HTTP_ROUTE}/log/client-error`,
   EVENT_FACTORY_ADDRESS: `${HTTP_ROUTE}/config-manager/event-factory-address`,
   EVENT_ESCROW_AMOUNT: `${HTTP_ROUTE}/config-manager/event-escrow-amount`,
   ARBITRATION_LENGTH: `${HTTP_ROUTE}/config-manager/arbitration-length`,

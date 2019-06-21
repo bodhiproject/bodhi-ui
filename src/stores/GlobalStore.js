@@ -1,5 +1,6 @@
 import { observable, action, reaction, toJS, computed } from 'mobx';
 import { SyncInfo } from 'models';
+import logger from 'loglevel';
 import { subscribeSyncInfo } from '../network/graphql/subscriptions';
 import { wsLink } from '../network/graphql';
 
@@ -7,7 +8,7 @@ const INIT_VALUES = {
   localWallet: false,
   socketOnline: false,
   internetOnline: navigator.onLine,
-  eventVersion: 5,
+  eventVersion: 6,
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: 0,
@@ -102,7 +103,7 @@ export default class GlobalStore {
   subscribeSyncInfo = () => {
     subscribeSyncInfo(this.app.graphqlClient, (err, data) => {
       if (err) {
-        console.error(err); // eslint-disable-line
+        logger.error('GlobalStore.subscribeSyncInfo', err);
         return;
       }
       const syncInfo = new SyncInfo(data);

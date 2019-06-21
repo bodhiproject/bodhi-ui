@@ -1,5 +1,4 @@
 import { observable, runInAction, action, computed, reaction, toJS } from 'mobx';
-import moment from 'moment';
 import { sum, isUndefined } from 'lodash';
 import axios from 'axios';
 import NP from 'number-precision';
@@ -13,7 +12,7 @@ import {
 } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
-const { BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
+const { PRE_BETTING, BETTING, PRE_RESULT_SETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
 const INIT = {
   loading: true,
   event: undefined,
@@ -38,11 +37,9 @@ const INIT = {
     address: '',
   },
   didWithdraw: undefined, // boolean
-  eventNeedUpdate: false,
 };
 
 export default class EventStore {
-  @observable eventNeedUpdate = INIT.eventNeedUpdate
   @observable loading = INIT.loading
   @observable event = INIT.event
   @observable address = INIT.address
@@ -69,12 +66,12 @@ export default class EventStore {
   }
 
   @computed get isBetting() {
-    return this.event && this.event.status === BETTING;
+    return this.event && [PRE_BETTING, BETTING].includes(this.event.status);
   }
 
   @computed get isResultSetting() {
     return this.event
-      && [ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
+      && [PRE_RESULT_SETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING].includes(this.event.status);
   }
 
   @computed get isArbitration() {
@@ -158,9 +155,6 @@ export default class EventStore {
   reset = () => Object.assign(this, INIT);
 
   @action
-  toggleEventNeedUpdate = () => this.eventNeedUpdate = !this.eventNeedUpdate;
-
-  @action
   async init({ txid, url }) {
     this.reset();
     this.txid = txid;
@@ -203,9 +197,8 @@ export default class EventStore {
     reaction(
       () => this.app.global.syncBlockNum,
       async () => {
-        if (this.eventNeedUpdate && this.app.ui.location === Routes.EVENT) {
+        if (this.app.history.pendingTransactions.length !== 0 && this.app.ui.location === Routes.EVENT) {
           await this.initEvent();
-          this.toggleEventNeedUpdate();
         }
       },
     );
@@ -345,9 +338,8 @@ export default class EventStore {
   @action
   disableEventActionsIfNecessary = () => {
     if (!this.event) return;
-    const { status, centralizedOracle, resultSetStartTime, isOpenResultSetting, consensusThreshold } = this.event;
-    const { global: { syncBlockTime }, wallet } = this.app;
-    const currBlockTime = moment.unix(syncBlockTime);
+    const { status, centralizedOracle, isOpenResultSetting, consensusThreshold } = this.event;
+    const { wallet } = this.app;
     const currentWalletNbot = wallet.currentWalletAddress ? wallet.currentWalletAddress.nbot : -1; // when no wallet, still can click on action buttons
 
     this.buttonDisabled = false;
@@ -367,8 +359,7 @@ export default class EventStore {
     }
 
     // Has not reached betting start time
-    if (status === BETTING
-      && currBlockTime.isBefore(moment.unix(this.event.betStartTime))) {
+    if (status === PRE_BETTING) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.betStartTimeDisabledText';
@@ -376,8 +367,7 @@ export default class EventStore {
     }
 
     // Has not reached result setting start time
-    if ((status === ORACLE_RESULT_SETTING)
-      && currBlockTime.isBefore(moment.unix(resultSetStartTime))) {
+    if (status === PRE_RESULT_SETTING) {
       this.buttonDisabled = true;
       this.warningType = EventWarningType.INFO;
       this.eventWarningMessageId = 'oracle.setStartTimeDisabledText';
@@ -385,7 +375,7 @@ export default class EventStore {
     }
 
     // User is not the result setter
-    if (status === ORACLE_RESULT_SETTING
+    if (ORACLE_RESULT_SETTING === status
       && !isOpenResultSetting()
       && centralizedOracle.toLowerCase() !== wallet.currentAddress.toLowerCase()) {
       this.buttonDisabled = true;
@@ -454,7 +444,7 @@ export default class EventStore {
   }
 
   bet = async () => {
-    const { naka: { checkLoginAndPopup } } = this.app;
+    const { naka: { checkLoginAndPopup }, ui: { toggleHistoryNeedUpdate }, global: { toggleBalanceNeedUpdate } } = this.app;
     if (!checkLoginAndPopup()) return;
 
     await this.app.tx.executeBet({
@@ -464,12 +454,12 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
-    this.toggleEventNeedUpdate();
-    this.app.global.toggleBalanceNeedUpdate();
+    toggleBalanceNeedUpdate();
+    toggleHistoryNeedUpdate();
   }
 
   set = async () => {
-    const { naka: { checkLoginAndPopup } } = this.app;
+    const { naka: { checkLoginAndPopup }, ui: { toggleHistoryNeedUpdate }, global: { toggleBalanceNeedUpdate } } = this.app;
     if (!checkLoginAndPopup()) return;
 
     await this.app.tx.executeSetResult({
@@ -479,12 +469,12 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
-    this.toggleEventNeedUpdate();
-    this.app.global.toggleBalanceNeedUpdate();
+    toggleBalanceNeedUpdate();
+    toggleHistoryNeedUpdate();
   }
 
   vote = async () => {
-    const { naka: { checkLoginAndPopup } } = this.app;
+    const { naka: { checkLoginAndPopup }, ui: { toggleHistoryNeedUpdate }, global: { toggleBalanceNeedUpdate } } = this.app;
     if (!checkLoginAndPopup()) return;
 
     await this.app.tx.executeVote({
@@ -494,18 +484,20 @@ export default class EventStore {
       eventRound: this.event.currentRound,
     });
     this.setSelectedOption(INIT.selectedOptionIdx);
-    this.toggleEventNeedUpdate();
-    this.app.global.toggleBalanceNeedUpdate();
+    toggleBalanceNeedUpdate();
+    toggleHistoryNeedUpdate();
   }
 
   withdraw = async () => {
+    const { naka: { checkLoginAndPopup }, ui: { toggleHistoryNeedUpdate }, global: { toggleBalanceNeedUpdate } } = this.app;
+    if (!checkLoginAndPopup()) return;
     await this.app.tx.executeWithdraw({
       eventAddress: this.event.address,
       winningAmount: decimalToSatoshi(this.nbotWinnings),
       escrowAmount: decimalToSatoshi(this.escrowAmount),
       version: this.event.version,
     });
-    this.toggleEventNeedUpdate();
-    this.app.global.toggleBalanceNeedUpdate();
+    toggleBalanceNeedUpdate();
+    toggleHistoryNeedUpdate();
   }
 }

@@ -88,7 +88,7 @@
   "create.resultsMsg": "结果名称不能为空",
   "create.select": "Select",
   "create.title": "标题",
-  "create.validBetEnd": "必须至少大于投注起始时间30分钟",
+  "create.validBetEnd": "必须至少大于当前时间30分钟",
   "create.validResultSetEnd": "必须至少大于结果设置起始时间30分钟",
   "create.validResultSetStart": "必须大于或等于投注结束时间",
   "create.xHoursForXNbot": "{hours} 小时 {nbot} NBOT",

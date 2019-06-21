@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl, intlShape, defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { withStyles, Grid, CardContent, Card, Typography } from '@material-ui/core';
 import { Token, TransactionType } from 'constants';
-
 import styles from './styles';
 import { getTimeString, toFixed } from '../../../../helpers/utility';
 import { getStatusString } from '../../../../helpers/stringUtil';
@@ -108,7 +107,6 @@ export default class TxRow extends Component {
         );
       }
       default: {
-        console.error(`Invalid txType: ${txType}`); // eslint-disable-line
         return (
           <Fragment>
             {`Invalid txType: ${txType}`}

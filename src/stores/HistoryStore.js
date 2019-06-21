@@ -1,5 +1,6 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import { filter, uniqBy } from 'lodash';
+import logger from 'loglevel';
 import { TransactionStatus, Routes, SortBy, TransactionType } from 'constants';
 import { transactions, resultSets } from '../network/graphql/queries';
 
@@ -28,7 +29,8 @@ const INIT_VALUES = {
   myWithdrawSkip: 0,
   limit: 0,
   updating: false,
-  prevTxLen: 0,
+  pendingTransactions: [],
+  confirmedTransactions: [],
 };
 const HISTORY_TYPES = {
   ALL_TRANSACTIONS: 0,
@@ -62,7 +64,8 @@ export default class {
   @observable resultHasMore = INIT_VALUES.resultHasMore;
   @observable resultSkip = INIT_VALUES.resultSkip;
 
-  prevTxLen = INIT_VALUES.prevTxLen;
+  @observable pendingTransactions = INIT_VALUES.pendingTransactions;
+  @observable confirmedTransactions = INIT_VALUES.confirmedTransactions;
 
   constructor(app) {
     this.app = app;
@@ -83,10 +86,8 @@ export default class {
         const { ui: { toggleHistoryNeedUpdate, ifHistoryNeedUpdate } } = this.app;
         if (!this.updating && ifHistoryNeedUpdate) {
           await this.update();
-          if (this.prevTxLen !== this.transactions.length) {
-            // expecting new create event tx entry
+          if (this.pendingTransactions.length === 0) {
             toggleHistoryNeedUpdate();
-            this.setPrevTxLength();
           }
         }
       },
@@ -149,39 +150,24 @@ export default class {
         return;
       }
       default: {
-        console.error(`Invalid txType: ${txType}`); // eslint-disable-line
+        logger.error(`HistoryStore.updateSkips: Invalid txType: ${tx.txType}`);
       }
     }
   }
 
   updateTxs = (oldTxs, newTxs, type) => {
-    const pendings = oldTxs.filter(tx => tx.txStatus === TransactionStatus.PENDING);
-    // remove all pendings
-    oldTxs = oldTxs.filter(tx => pendings.filter(pending => pending.txid === tx.txid).length === 0);
-    // record txids for updating
-    const pendingTxids = new Map();
-    pendings.map(tx => pendingTxids.set(tx.txid, tx));
     const oldTxids = new Map();
     oldTxs.map(tx => oldTxids.set(tx.txid, tx));
     // search through newTxs
     let confirmedAddOns = [];
-    let pendingAddOns = [];
     const addOnTxids = new Map();
     newTxs.forEach(tx => {
       addOnTxids.set(tx.txid, tx);
-      if (pendingTxids.has(tx.txid)) {
-        if (tx.txStatus === TransactionStatus.PENDING) pendingAddOns = [...pendingAddOns, tx];
-        else if (tx.txStatus === TransactionStatus.SUCCESS) {
-          confirmedAddOns = [...confirmedAddOns, tx];
-          this.updateSkips(tx, type);
-        }
-      } else {
-        // new tx or old txs already has it
-        confirmedAddOns = [...confirmedAddOns, tx];
-        if (!oldTxids.has(tx.txid)) {
-          // new tx
-          this.updateSkips(tx, type);
-        }
+      // new tx or old txs already has it
+      confirmedAddOns = [...confirmedAddOns, tx];
+      if (!oldTxids.has(tx.txid)) {
+        // new tx
+        this.updateSkips(tx, type);
       }
     });
     // add back existing txs
@@ -191,7 +177,7 @@ export default class {
       }
     });
 
-    return [...pendingAddOns, ...confirmedAddOns];
+    return confirmedAddOns;
   }
 
   @action
@@ -206,7 +192,9 @@ export default class {
       }
       const filters = { transactorAddress: account };
       const newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
-      this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+      this.pendingTransactions = await this.fetchPendingHistory(filters);
+      this.confirmedTransactions = this.updateTxs(this.confirmedTransactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+      this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
     } else if (location === Routes.EVENT || location === Routes.EVENT_HISTORY) {
       if (!address) {
         this.updating = false;
@@ -215,8 +203,9 @@ export default class {
 
       const filters = { eventAddress: address }; // for all txs
       let newTxs = await this.fetchHistory(filters, this.limit, 0, 0, 0, 0, 0, true);
-      this.transactions = this.updateTxs(this.transactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
-
+      this.pendingTransactions = await this.fetchPendingHistory({ eventAddress: address, transactorAddress: account });
+      this.confirmedTransactions = this.updateTxs(this.confirmedTransactions, newTxs, HISTORY_TYPES.ALL_TRANSACTIONS);
+      this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
       newTxs = await this.fetchMyHistory(this.limit, 0, 0, 0, 0, 0, true); // for my txs
       this.myTransactions = this.updateTxs(this.myTransactions, newTxs, HISTORY_TYPES.MY_TRANSACTIONS);
       // load result history
@@ -226,9 +215,6 @@ export default class {
 
     this.updating = false;
   }
-
-  @action
-  setPrevTxLength = () => this.prevTxLen = this.transactions.length;
 
   @action
   init = async () => {
@@ -243,14 +229,15 @@ export default class {
         this.loaded = true;
         return;
       }
-      await this.loadFirstTransactions({ transactorAddress: account });
-      this.setPrevTxLength();
+      const filters = { transactorAddress: account };
+      await this.loadFirstTransactions(filters);
+      this.pendingTransactions = await this.fetchPendingHistory(filters);
     } else if (location === Routes.EVENT) {
       if (!address) return;
 
       this.limit = EVENT_DETAIL_HISTORY_LIMIT;
       await this.loadFirstTransactions({ eventAddress: address }); // for all txs
-
+      this.pendingTransactions = await this.fetchPendingHistory({ eventAddress: address, transactorAddress: account });
       this.myTransactions = await this.fetchMyHistory(); // for my txs
 
       // load result history
@@ -260,12 +247,13 @@ export default class {
 
       this.limit = EVENT_HISTORY_LIMIT;
       await this.loadFirstTransactions({ eventAddress: address }); // for all txs
-
+      this.pendingTransactions = await this.fetchPendingHistory({ eventAddress: address, transactorAddress: account });
       this.myTransactions = await this.fetchMyHistory(); // for my txs
 
       // load result history
       this.resultSetsHistory = await this.fetchResultHistory();
     }
+    this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
   }
 
   /**
@@ -273,11 +261,9 @@ export default class {
    */
   @action
   loadFirstTransactions = async (filters) => {
-    this.transactions = await this.fetchHistory(filters);
-
-    runInAction(() => {
-      this.loaded = true;
-    });
+    this.confirmedTransactions = await this.fetchHistory(filters);
+    this.transactions = [...this.confirmedTransactions];
+    this.loaded = true;
   }
 
   /**
@@ -307,10 +293,10 @@ export default class {
         const moreTxs = await this.fetchHistory(filters);
 
         runInAction(() => {
-          this.transactions = [...this.transactions, ...moreTxs];
-          this.transactions = uniqBy(this.transactions, 'txid');
+          this.confirmedTransactions = [...this.confirmedTransactions, ...moreTxs];
+          this.confirmedTransactions = uniqBy(this.confirmedTransactions, 'txid');
+          this.transactions = [...this.pendingTransactions, ...this.confirmedTransactions];
           this.loadingMore = false; // stop showing the loading icon
-          this.setPrevTxLength();
         });
       } catch (e) {
         this.skip -= this.limit;
@@ -372,28 +358,23 @@ export default class {
     eventSkip = this.eventSkip, betSkip = this.betSkip,
     resultSetSkip = this.resultSetSkip, withdrawSkip = this.withdrawSkip, updating = false) => {
     // Address is required for the request filters
-    if (this.hasMore || this.updating) {
-      const { graphqlClient } = this.app;
+    const { graphqlClient } = this.app;
 
-      const transactionSkips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
+    const transactionSkips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
+    filters.txStatus = TransactionStatus.SUCCESS;
+    const res = await transactions(graphqlClient, { filter: filters, limit, skip, transactionSkips });
 
-      const res = await transactions(graphqlClient, { filter: filters, limit, skip, transactionSkips });
+    const { items, pageInfo } = res;
 
-      const { items, pageInfo } = res;
-      const pending = filter(items, { txStatus: TransactionStatus.PENDING });
-      const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
+    if (pageInfo && !updating) {
+      this.hasMore = pageInfo.hasNextPage;
+      this.eventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
+      this.betSkip = pageInfo.nextTransactionSkips.nextBetSkip;
+      this.resultSetSkip = pageInfo.nextTransactionSkips.nextResultSetSkip;
+      this.withdrawSkip = pageInfo.nextTransactionSkips.nextWithdrawSkip;
+    } else if (!pageInfo && !updating) this.hasMore = false;
 
-      if (pageInfo && !updating) {
-        this.hasMore = pageInfo.hasNextPage;
-        this.eventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
-        this.betSkip = pageInfo.nextTransactionSkips.nextBetSkip;
-        this.resultSetSkip = pageInfo.nextTransactionSkips.nextResultSetSkip;
-        this.withdrawSkip = pageInfo.nextTransactionSkips.nextWithdrawSkip;
-      } else if (!pageInfo && !updating) this.hasMore = false;
-
-      return [...pending, ...confirmed];
-    }
-    return INIT_VALUES.transactions;
+    return items;
   }
 
   /**
@@ -404,33 +385,30 @@ export default class {
     eventSkip = this.myEventSkip, betSkip = this.myBetSkip,
     resultSetSkip = this.myResultSetSkip, withdrawSkip = this.myWithdrawSkip, updating = false) => {
     // Address is required for the request filters
-    if (this.myHasMore || this.updating) {
-      const { naka: { account }, eventPage: { event }, graphqlClient } = this.app;
-      const address = event && event.address;
+    const { naka: { account }, eventPage: { event }, graphqlClient } = this.app;
+    const address = event && event.address;
 
-      if (!address || !account) return INIT_VALUES.myTransactions;
+    if (!address || !account) return INIT_VALUES.myTransactions;
 
-      const filters = { eventAddress: address, transactorAddress: account };
+    const filters = { eventAddress: address, transactorAddress: account };
 
-      const transactionSkips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
+    const transactionSkips = { eventSkip, betSkip, resultSetSkip, withdrawSkip };
 
-      const res = await transactions(graphqlClient, { filter: filters, limit, skip, transactionSkips });
+    const res = await transactions(graphqlClient, { filter: filters, limit, skip, transactionSkips });
 
-      const { items, pageInfo } = res;
-      const pending = filter(items, { txStatus: TransactionStatus.PENDING });
-      const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
+    const { items, pageInfo } = res;
+    const pending = filter(items, { txStatus: TransactionStatus.PENDING });
+    const confirmed = filter(items, { txStatus: TransactionStatus.SUCCESS });
 
-      if (pageInfo && !updating) {
-        this.myHasMore = pageInfo.hasNextPage;
-        this.myEventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
-        this.myBetSkip = pageInfo.nextTransactionSkips.nextBetSkip;
-        this.myResultSetSkip = pageInfo.nextTransactionSkips.nextResultSetSkip;
-        this.myWithdrawSkip = pageInfo.nextTransactionSkips.nextWithdrawSkip;
-      } else if (!pageInfo && !updating) this.myHasMore = false;
+    if (pageInfo && !updating) {
+      this.myHasMore = pageInfo.hasNextPage;
+      this.myEventSkip = pageInfo.nextTransactionSkips.nextEventSkip;
+      this.myBetSkip = pageInfo.nextTransactionSkips.nextBetSkip;
+      this.myResultSetSkip = pageInfo.nextTransactionSkips.nextResultSetSkip;
+      this.myWithdrawSkip = pageInfo.nextTransactionSkips.nextWithdrawSkip;
+    } else if (!pageInfo && !updating) this.myHasMore = false;
 
-      return [...pending, ...confirmed];
-    }
-    return INIT_VALUES.myTransactions;
+    return [...pending, ...confirmed];
   }
 
   /**
@@ -439,27 +417,39 @@ export default class {
    */
   fetchResultHistory = async (limit = this.limit, skip = this.resultSkip, updating = false) => {
     // Address is required for the request filters
-    if (this.resultHasMore || this.updating) {
-      const { eventPage: { event }, graphqlClient } = this.app;
-      const address = event && event.address;
+    const { eventPage: { event }, graphqlClient } = this.app;
+    const address = event && event.address;
 
-      if (!address) return INIT_VALUES.resultSetsHistory;
+    if (!address) return INIT_VALUES.resultSetsHistory;
 
-      const res = await resultSets(graphqlClient, {
-        filter: { eventAddress: address, txStatus: TransactionStatus.SUCCESS },
-        orderBy: { field: 'eventRound', direction: SortBy.DESCENDING },
-        limit,
-        skip,
-      });
+    const res = await resultSets(graphqlClient, {
+      filter: { eventAddress: address, txStatus: TransactionStatus.SUCCESS },
+      orderBy: { field: 'eventRound', direction: SortBy.DESCENDING },
+      limit,
+      skip,
+    });
 
-      const { items, pageInfo } = res;
+    const { items, pageInfo } = res;
 
-      if (pageInfo && !updating) {
-        this.resultHasMore = pageInfo.hasNextPage;
-      } else if (!pageInfo && !updating) this.resultHasMore = false;
+    if (pageInfo && !updating) {
+      this.resultHasMore = pageInfo.hasNextPage;
+    } else if (!pageInfo && !updating) this.resultHasMore = false;
 
-      return items;
-    }
-    return INIT_VALUES.resultSetsHistory;
+    return items;
+  }
+
+  /**
+   * Gets the pending tx history via API call.
+   * @return {[Transaction]} Tx array of the query.
+   */
+  fetchPendingHistory = async (filters, limit = this.limit) => {
+    if (!filters.transactorAddress) return INIT_VALUES.pendingTransactions;
+    const { graphqlClient } = this.app;
+
+    filters.txStatus = TransactionStatus.PENDING;
+    const transactionSkips = { eventSkip: 0, betSkip: 0, resultSetSkip: 0, withdrawSkip: 0 };
+    const res = await transactions(graphqlClient, { filter: filters, limit, transactionSkips });
+
+    return res;
   }
 }

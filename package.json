@@ -29,6 +29,8 @@
     "jest": "^23.5.0",
     "js-promisify": "^1.3.1",
     "lodash": "^4.17.11",
+    "loglevel": "^1.6.3",
+    "loglevel-plugin-remote": "^0.6.8",
     "mixpanel-browser": "^2.22.4",
     "mobx": "^5.0.2",
     "mobx-react": "^5.2.3",

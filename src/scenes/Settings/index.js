@@ -85,6 +85,7 @@ export default class Settings extends Component {
           value={global.eventVersion}
           onChange={(e) => global.setEventVersion(e.target.value)}
         >
+          <MenuItem value={6}>6</MenuItem>
           <MenuItem value={5}>5</MenuItem>
           {isTestnet && <MenuItem value={4}>4</MenuItem>}
           {isTestnet && <MenuItem value={3}>3</MenuItem>}

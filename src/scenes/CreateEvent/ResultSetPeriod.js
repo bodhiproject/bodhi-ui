@@ -39,7 +39,7 @@ export default class ResultSetPeriod extends Component {
         createEvent: {
           resultSettingPeriod,
           resultSetting: { startTime: storeStartTime, endTime: storeEndTime },
-          error: { resultSetting: { startTime: startTimeErr, endTime: endTimeErr } },
+          error: { resultSetting: { startTime: startTimeErr } },
         },
       },
     } = this.props;
@@ -63,12 +63,6 @@ export default class ResultSetPeriod extends Component {
           dateUnix={startTime}
           error={startTimeErr}
           onChange={this.onStartTimeChange}
-        />
-        <DateTimeCard
-          title={TimeCardTitle.END_TIME}
-          dateUnix={endTime}
-          error={endTimeErr}
-          onChange={this.onEndTimeChange}
         />
       </Section>
     );

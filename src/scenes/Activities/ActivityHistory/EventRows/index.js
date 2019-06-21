@@ -138,7 +138,6 @@ class EventRow extends Component {
           );
         }
         default: {
-          console.error(`Invalid txType: ${txType}`); // eslint-disable-line
           return (
             <Fragment>
               {`Invalid txType: ${txType}`}

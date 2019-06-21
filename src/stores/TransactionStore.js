@@ -3,6 +3,7 @@ import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
 import { utf8ToHex, padRight } from 'web3-utils';
 import { cloneDeep } from 'lodash';
+import logger from 'loglevel';
 import {
   addPendingEvent,
   addPendingBet,
@@ -24,8 +25,6 @@ const VOTE_EVENT_FUNC_SIG = '1e00eb7f';
 const CREATE_EVENT_FUNC_TYPES = [
   'string',
   'bytes32[3]',
-  'uint256',
-  'uint256',
   'uint256',
   'uint256',
   'address',
@@ -98,7 +97,7 @@ export default class TransactionStore {
       );
       return txid;
     } catch (err) {
-      console.log('User cancelled'); // eslint-disable-line
+      logger.error('TransactionStore.createEvent', err);
       return undefined;
     }
   };
@@ -130,7 +129,7 @@ export default class TransactionStore {
       );
       return txid;
     } catch (err) {
-      console.log('User cancelled'); // eslint-disable-line
+      logger.error('TransactionStore.playEvent', err);
     }
   };
 
@@ -158,10 +157,8 @@ export default class TransactionStore {
         centralizedOracle,
         name,
         results,
-        betStartTime,
         betEndTime,
         resultSetStartTime,
-        resultSetEndTime,
         amountSatoshi,
         arbitrationOptionIndex,
         arbitrationRewardPercentage,
@@ -172,10 +169,8 @@ export default class TransactionStore {
       const createEventParams = [
         name,
         cloneDeep(results),
-        betStartTime,
         betEndTime,
         resultSetStartTime,
-        resultSetEndTime,
         centralizedOracle,
         arbitrationOptionIndex,
         arbitrationRewardPercentage,
@@ -218,10 +213,8 @@ export default class TransactionStore {
           results: createEventParams[1],
           numOfResults: results.length,
           centralizedOracle,
-          betStartTime,
           betEndTime,
           resultSetStartTime,
-          resultSetEndTime,
           language,
         });
 
@@ -230,6 +223,7 @@ export default class TransactionStore {
       }
       return txid;
     } catch (err) {
+      logger.error('TransactionStore.executeCreateEvent', err);
       this.handleReqError(err, 'addPendingEvent');
     }
   }
@@ -274,6 +268,7 @@ export default class TransactionStore {
         Tracking.track('event-bet');
       }
     } catch (err) {
+      logger.error('TransactionStore.executeBet', err);
       this.handleReqError(err, 'addPendingBet');
     }
   }
@@ -320,6 +315,7 @@ export default class TransactionStore {
         Tracking.track('event-setResult');
       }
     } catch (err) {
+      logger.error('TransactionStore.executeSetResult', err);
       this.handleReqError(err, 'addPendingResultSet');
     }
   }
@@ -366,6 +362,7 @@ export default class TransactionStore {
         Tracking.track('event-vote');
       }
     } catch (err) {
+      logger.error('TransactionStore.executeVote', err);
       this.handleReqError(err, 'addPendingBet');
     }
   }
@@ -406,6 +403,7 @@ export default class TransactionStore {
         Tracking.track('event-withdraw');
       }
     } catch (err) {
+      logger.error('TransactionStore.executeWithdraw', err);
       this.handleReqError(err, 'addPendingWithdraw');
     }
   }

@@ -12,7 +12,7 @@ import { getEventDesc } from '../../helpers/utility';
 import EventWarning from '../EventWarning';
 import styles from './styles';
 
-const { CREATED, BETTING, ORACLE_RESULT_SETTING, OPEN_RESULT_SETTING, ARBITRATION, WITHDRAWING } = EVENT_STATUS;
+const { WITHDRAWING } = EVENT_STATUS;
 const messages = defineMessages({
   pending: { id: 'str.pending', defaultMessage: 'Pending' },
   placeBet: { id: 'bottomButtonText.placeBet', defaultMessage: 'Place Bet' },
@@ -46,19 +46,6 @@ export default class EventCard extends Component {
     onClick: null,
   };
 
-  getButtonText = () => {
-    const { status } = this.props.event;
-    switch (status) {
-      case CREATED:
-      case BETTING: return messages.placeBet;
-      case ORACLE_RESULT_SETTING:
-      case OPEN_RESULT_SETTING: return messages.setResult;
-      case ARBITRATION: return messages.arbitrate;
-      case WITHDRAWING: return messages.withdraw;
-      default: console.error(`Unhandled status: ${status}`); // eslint-disable-line
-    }
-  }
-
   get isWithdrawn() {
     const { event: { status, transactions } } = this.props;
     if (status !== WITHDRAWING) return false;
@@ -74,7 +61,7 @@ export default class EventCard extends Component {
     return (
       <Fragment>
         {asOptions.map((option, i) => (
-          (status !== EVENT_STATUS.BETTING || (status === EVENT_STATUS.BETTING && i !== asOptions.length - 1)) &&
+          (status !== EVENT_STATUS.BETTING || ([EVENT_STATUS.PRE_BETTING, EVENT_STATUS.BETTING].includes(status) && i !== asOptions.length - 1)) &&
           <Option
             key={i}
             option={option}
@@ -93,34 +80,36 @@ export default class EventCard extends Component {
           <Card className={classes.eventCard} onClick={onClick}>
             <div className={cx(classes.eventCardBg, `bg${index % 8}`)}></div>
             <div className={cx(classes.eventCardSection, 'top')}>
-              {isPending() && status !== WITHDRAWING && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
-              {isPending() && status === WITHDRAWING && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
-              {this.isWithdrawn && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
-              <div className={classes.stateText}><FormattedMessageFixed id={messages[getEventDesc(event, currentAddress)].id} defaultMessage={messages[getEventDesc(event, currentAddress)].defaultMessage} /></div>
-              <div className={classes.eventCardNameBundle}>
-                <div className={classes.eventCardNameFlex}>
-                  <Typography variant="h6" className={classes.eventCardName}>
-                    {name}
-                  </Typography>
+              <div className={classes.upper}>
+                {isPending() && status !== WITHDRAWING && <EventWarning id="str.pendingConfirmation" message="Pending Confirmation" />}
+                {isPending() && status === WITHDRAWING && <EventWarning id="str.withdrawing" message="Withdrawning" type={EventWarningType.INFO} />}
+                {this.isWithdrawn && <EventWarning id="str.withdrawn" message="Withdrawn" type={EventWarningType.INFO} />}
+                <div className={classes.stateText}><FormattedMessageFixed id={messages[getEventDesc(event, currentAddress)].id} defaultMessage={messages[getEventDesc(event, currentAddress)].defaultMessage} /></div>
+                <div className={classes.eventCardNameBundle}>
+                  <div className={classes.eventCardNameFlex}>
+                    <Typography variant="h6" className={classes.eventCardName}>
+                      {name}
+                    </Typography>
+                  </div>
+                  <FavoriteButton eventAddress={address} />
                 </div>
-                <FavoriteButton eventAddress={address} />
+                <div className={classes.eventCardNameBundle}>
+                  <div className={classes.eventCardNameFlex}>
+                    <div className={classes.eventCardInfoItem}>
+                      <FormattedMessage id='str.arbitrationReward' defaultMessage='Arbitration Reward' />{`: ${arbitrationRewardPercentage}%`}
+                    </div>
+                    <div className={classes.eventCardInfoItem}>
+                      <RaisedAmount amount={totalBets} />
+                    </div>
+                  </div>
+                  <div className={classes.eventCardInfo}>
+                    <div className={classes.eventCardInfoItem}>
+                      {getEndTime() && <TimeCorner endTime={getEndTime()} />}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className={classes.eventCardNameBundle}>
-                <div className={classes.eventCardNameFlex}>
-                  <div className={classes.eventCardInfoItem}>
-                    <FormattedMessage id='str.arbitrationReward' defaultMessage='Arbitration Reward' />{`: ${arbitrationRewardPercentage}%`}
-                  </div>
-                  <div className={classes.eventCardInfoItem}>
-                    <RaisedAmount amount={totalBets} />
-                  </div>
-                </div>
-                <div className={classes.eventCardInfo}>
-                  <div className={classes.eventCardInfoItem}>
-                    {getEndTime() && <TimeCorner endTime={getEndTime()} />}
-                  </div>
-                </div>
-              </div>
-              <div className={classes.alignBottom}>
+              <div>
                 {this.renderOptions()}
               </div>
             </div>

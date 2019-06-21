@@ -1,7 +1,7 @@
 import moment from 'moment';
 import numbro from 'numbro';
 import { EVENT_STATUS } from 'constants';
-import { isNaN, isFinite, isUndefined } from 'lodash';
+import { isNaN, isFinite, isUndefined, isNull } from 'lodash';
 import NP from 'number-precision';
 import { defineMessages } from 'react-intl';
 import { fromWei, isHexStrict, numberToHex, toBN } from 'web3-utils';
@@ -211,7 +211,7 @@ export function shortenAddress(text, maxLength) {
 }
 
 export function toFixed(num, isFullNumber) {
-  if (isUndefined(num)) return '';
+  if (isUndefined(num) || isNull(num)) return '';
   if (String(num).length === 0) return '';
   if (Number(num) !== 0 && !num) return '';
   if (isFullNumber) {
@@ -226,10 +226,14 @@ export function getEventDesc(event, currentAddress) {
   if (withdrawnList.includes(currentAddress)) return 'withdrawn';
   switch (status) {
     case EVENT_STATUS.CREATED: return 'creating';
-    case EVENT_STATUS.BETTING: return moment().isBefore(moment.unix(event.betStartTime)) ? 'predictionComingSoon' : 'predictionInProgress';
+    case EVENT_STATUS.PRE_BETTING: return 'predictionComingSoon';
+    case EVENT_STATUS.BETTING: return 'predictionInProgress';
+    case EVENT_STATUS.PRE_RESULT_SETTING:
+      if (centralizedOracle !== currentAddress) return 'arbitrationComingSoon';
+      return 'resultSettingComingSoon';
     case EVENT_STATUS.ORACLE_RESULT_SETTING:
       if (centralizedOracle !== currentAddress) return 'arbitrationComingSoon';
-      return moment().isBefore(moment.unix(event.resultSetStartTime)) ? 'resultSettingComingSoon' : 'resultSettingInProgress';
+      return 'resultSettingInProgress';
     case EVENT_STATUS.OPEN_RESULT_SETTING: return 'resultSettingInProgress';
     case EVENT_STATUS.ARBITRATION: return 'arbitrationInProgress';
     case EVENT_STATUS.WITHDRAWING: return 'finished';

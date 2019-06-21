@@ -85,6 +85,7 @@ export default class PredictionStore {
       } = this.app;
 
       const filter = { OR: [
+        { status: EVENT_STATUS.PRE_BETTING, version: eventVersion },
         { status: EVENT_STATUS.BETTING, version: eventVersion },
         { status: EVENT_STATUS.CREATED, version: eventVersion },
       ] };

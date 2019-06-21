@@ -1,5 +1,6 @@
 import { isEmpty, filter, debounce } from 'lodash';
 import { observable, action, reaction } from 'mobx';
+import logger from 'loglevel';
 import { EVENT_STATUS, SortBy } from 'constants';
 import { searchEvents } from '../../network/graphql/queries';
 
@@ -71,14 +72,15 @@ export default class SearchStore {
         includeRoundBets: true,
         roundBetsAddress,
       });
-      this.bets = filter(this.events, { status: EVENT_STATUS.BETTING });
+      this.bets = filter(this.events, (event) => [EVENT_STATUS.PRE_BETTING, EVENT_STATUS.BETTING].includes(event.status));
       this.sets = filter(this.events, (e) =>
-        e.status === EVENT_STATUS.ORACLE_RESULT_SETTING
+        e.status === EVENT_STATUS.PRE_RESULT_SETTING
+        || e.status === EVENT_STATUS.ORACLE_RESULT_SETTING
         || e.status === EVENT_STATUS.OPEN_RESULT_SETTING);
       this.votes = filter(this.events, { status: EVENT_STATUS.ARBITRATION });
       this.withdraws = filter(this.events, { status: EVENT_STATUS.WITHDRAWING });
     } catch (err) {
-      console.error(err); // eslint-disable-line
+      logger.error('SearchStore.fetchEvents', err);
       this.resetEvents();
     }
 
