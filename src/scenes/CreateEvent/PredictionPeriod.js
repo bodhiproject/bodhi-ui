@@ -6,9 +6,9 @@ import { Section } from './components';
 import DateTimeCard from './DateTimeCard';
 
 const messages = defineMessages({
-  createBetStartTimeMsg: {
-    id: 'create.predictionPeriod',
-    defaultMessage: 'Prediction Period',
+  createBetEndTimeMsg: {
+    id: 'create.predictionEndTime',
+    defaultMessage: 'Prediction End Time',
   },
 });
 
@@ -37,7 +37,6 @@ export default class PredictionPeriod extends Component {
     const {
       store: {
         createEvent: {
-          predictionPeriod,
           prediction: { startTime: storeStartTime, endTime: storeEndTime },
           error: { prediction: { endTime: endTimeErr } },
         },
@@ -54,7 +53,7 @@ export default class PredictionPeriod extends Component {
     }
 
     return (
-      <Section title={messages.createBetStartTimeMsg} note={predictionPeriod}>
+      <Section title={messages.createBetEndTimeMsg}>
         <DateTimeCard
           title={TimeCardTitle.END_TIME}
           dateUnix={endTime}
