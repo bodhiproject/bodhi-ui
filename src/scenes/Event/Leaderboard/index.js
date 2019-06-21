@@ -7,7 +7,7 @@ import { Routes } from 'constants';
 import { Card, SeeAllButton } from 'components';
 import MobileStepper from './carousel';
 import styles from './styles';
-import { satoshiToDecimal, toFixed } from '../../../helpers/utility';
+import { satoshiToDecimal, toFixed, shortenText } from '../../../helpers/utility';
 import InfiniteScroll from '../../../components/InfiniteScroll';
 
 const messages = defineMessages({
@@ -65,7 +65,7 @@ export default class Leaderboard extends React.Component {
     const ranking = (index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='cup' />)
       || (index === 3 && '👍') || (index >= 4 && '✊');
 
-    const address = (account && account.toLowerCase() === betterAddress && intl.formatMessage(messages.strYou)) || `${betterAddress.slice(0, 6)}...${betterAddress.slice(-6)}`;
+    const address = (account && account.toLowerCase() === betterAddress && intl.formatMessage(messages.strYou)) || shortenText(betterAddress, 6);
     return (
       <Grid container className={classes.grid} key={index} alignItems='center'>
         <Grid item xs={1}>

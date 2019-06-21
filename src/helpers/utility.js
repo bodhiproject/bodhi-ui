@@ -196,17 +196,16 @@ export function getTimeString(time) {
 /**
  * Shortens address string by only showing the first and last couple characters.
  * @param text {String} Origin address
- * @param maxLength {Number} Length of output string, including 3 dots
+ * @param maxLength {Number} Length of front of string and back of string
  * @return {String} Address in format "Qjsb ... 3dkb", or empty string if input is undefined or empty
  */
-export function shortenAddress(text, maxLength) {
+export function shortenText(text, maxLength) {
   if (!text) {
     return '';
   }
 
-  const cutoffLength = (maxLength - 3) / 2;
   return text.length > maxLength
-    ? `${text.substr(0, cutoffLength)} ... ${text.substr(text.length - cutoffLength)}`
+    ? `${text.slice(0, maxLength)} ... ${text.slice(-maxLength)}`
     : text;
 }
 
