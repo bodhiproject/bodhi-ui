@@ -103,11 +103,6 @@ export default class NakaStore {
     return true;
   }
 
-  getSlicedAddress = () => {
-    if (this.loggedIn) return `${this.account.slice(0, 6)}...${this.account.slice(-6)}`;
-    return '';
-  }
-
   @action
   openPopover = async (messageId) => {
     this.popoverOpen = true;

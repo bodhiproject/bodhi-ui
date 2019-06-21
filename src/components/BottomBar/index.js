@@ -9,6 +9,7 @@ import { Token } from 'constants';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import styles from './styles';
+import { shortenText } from '../../helpers/utility';
 
 
 @injectIntl
@@ -25,12 +26,12 @@ export default class BottomBar extends Component {
       classes,
       store: {
         global: { syncBlockTime, online },
-        naka: { loggedIn, getSlicedAddress },
+        naka: { loggedIn, account },
         wallet: { lastAddressWithdrawLimit },
       },
     } = this.props;
 
-    let slicedAddress = getSlicedAddress();
+    let slicedAddress = shortenText(account, 6);
     slicedAddress = slicedAddress.length > 0 ? `: (${slicedAddress})` : '';
 
     return (

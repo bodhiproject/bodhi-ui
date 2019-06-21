@@ -7,7 +7,7 @@ import { Token } from 'constants';
 import { SeeAllButton } from 'components';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
-import { getTimeString, toFixed } from '../../../../helpers';
+import { getTimeString, toFixed, shortenText } from '../../../../helpers';
 import { EXPLORER } from '../../../../network/routes';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import { getStatusString } from '../../../../helpers/stringUtil';
@@ -54,10 +54,10 @@ export default class EventResultHistory extends Component {
     const { store: { naka: { account } } } = this.props;
     const { eventRound, txSender } = resultSet;
     let { resultName } = resultSet;
-    if (resultName.length > 20) resultName = `${resultName.slice(0, 6)}...${resultName.slice(-6)}`;
+    if (resultName.length > 20) resultName = shortenText(resultName, 6);
 
     if (eventRound === 0) {
-      const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`;
+      const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || shortenText(txSender, 6);
       return (
         <Fragment>
           <FormattedHTMLMessage

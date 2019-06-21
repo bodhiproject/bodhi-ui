@@ -7,7 +7,7 @@ import { Grid, Card, CardContent, Typography, withStyles } from '@material-ui/co
 import { Token, TransactionType } from 'constants';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import styles from './styles';
-import { getTimeString, toFixed } from '../../../../helpers/utility';
+import { getTimeString, toFixed, shortenText } from '../../../../helpers/utility';
 import { getStatusString } from '../../../../helpers/stringUtil';
 import { EXPLORER } from '../../../../network/routes';
 
@@ -78,8 +78,8 @@ class EventRow extends Component {
     renderCardString = (transaction, intl) => {
       const { txType, amount } = transaction;
       let { eventName, resultName } = transaction;
-      if (eventName && eventName.length > 20) eventName = `${eventName.slice(0, 6)}...${eventName.slice(-6)}`;
-      if (resultName && resultName.length > 20) resultName = `${resultName.slice(0, 6)}...${resultName.slice(-6)}`;
+      if (eventName && eventName.length > 20) eventName = shortenText(eventName, 6);
+      if (resultName && resultName.length > 20) resultName = shortenText(resultName, 6);
 
       switch (txType) {
         case TransactionType.CREATE_EVENT: {

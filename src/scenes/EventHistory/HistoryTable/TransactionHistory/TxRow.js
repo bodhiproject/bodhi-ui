@@ -6,7 +6,7 @@ import { withStyles, Grid, CardContent, Card, Typography } from '@material-ui/co
 import { Token, TransactionType } from 'constants';
 
 import styles from './styles';
-import { getTimeString } from '../../../../helpers/utility';
+import { getTimeString, shortenText } from '../../../../helpers/utility';
 import { getStatusString } from '../../../../helpers/stringUtil';
 import { EXPLORER } from '../../../../network/routes';
 
@@ -47,9 +47,9 @@ export default class TxRow extends Component {
   renderCardString = (transaction, intl, account) => {
     const { txType, amount, txSender } = transaction;
     let { eventName, resultName } = transaction;
-    if (eventName && eventName.length > 20) eventName = `${eventName.slice(0, 6)}...${eventName.slice(-6)}`;
-    if (resultName && resultName.length > 20) resultName = `${resultName.slice(0, 6)}...${resultName.slice(-6)}`;
-    const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || `${txSender.slice(0, 6)}...${txSender.slice(-6)}`;
+    if (eventName && eventName.length > 20) eventName = shortenText(eventName, 6);
+    if (resultName && resultName.length > 20) resultName = shortenText(resultName, 6);
+    const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || shortenText(txSender, 6);
 
     switch (txType) {
       case TransactionType.CREATE_EVENT: {
