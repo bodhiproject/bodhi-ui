@@ -85,9 +85,12 @@ export default class PredictionStore {
       } = this.app;
 
       const filter = { OR: [
-        { status: EVENT_STATUS.PRE_BETTING, version: eventVersion },
-        { status: EVENT_STATUS.BETTING, version: eventVersion },
-        { status: EVENT_STATUS.CREATED, version: eventVersion },
+        { status: EVENT_STATUS.PRE_BETTING, version: 5 }, // TODO: quick fix, later need to make version filter accept OR array?
+        { status: EVENT_STATUS.BETTING, version: 5 },
+        { status: EVENT_STATUS.CREATED, version: 5 },
+        { status: EVENT_STATUS.PRE_BETTING, version: 6 },
+        { status: EVENT_STATUS.BETTING, version: 6 },
+        { status: EVENT_STATUS.CREATED, version: 6 },
       ] };
       const orderBy = { field: 'betEndTime', direction: this.sortBy };
       const res = await events(graphqlClient, {
