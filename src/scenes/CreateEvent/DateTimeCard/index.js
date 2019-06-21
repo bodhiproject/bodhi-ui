@@ -11,7 +11,7 @@ import styles from '../styles';
 
 const DateTimeCard = ({ intl, dateUnix, error, onChange }) => (
   <Grid container direction="row" alignItems="center">
-    <Grid item xs={11} md={9} lg={7}>
+    <Grid item xs={12}>
       <FormControl fullWidth>
         <DateTimePicker dateUnix={dateUnix} onChange={onChange} />
         {error && (
