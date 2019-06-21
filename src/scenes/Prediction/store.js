@@ -80,14 +80,13 @@ export default class PredictionStore {
       const {
         graphqlClient,
         naka: { account },
-        global: { eventVersion },
         ui: { currentTimeUnix },
       } = this.app;
 
       const filter = { OR: [
-        { status: EVENT_STATUS.PRE_BETTING, version: eventVersion },
-        { status: EVENT_STATUS.BETTING, version: eventVersion },
-        { status: EVENT_STATUS.CREATED, version: eventVersion },
+        { status: EVENT_STATUS.PRE_BETTING, versions: [5, 6] },
+        { status: EVENT_STATUS.BETTING, versions: [5, 6] },
+        { status: EVENT_STATUS.CREATED, versions: [5, 6] },
       ] };
       const orderBy = { field: 'betEndTime', direction: this.sortBy };
       const res = await events(graphqlClient, {

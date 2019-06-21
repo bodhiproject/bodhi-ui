@@ -78,13 +78,12 @@ export default class {
       const {
         graphqlClient,
         naka: { account },
-        global: { eventVersion },
       } = this.app;
 
       if (!account) return INIT_VALUES.list;
 
       const orderBy = { field: 'arbitrationEndTime', direction: SortBy.DESCENDING };
-      const filter = { withdrawerAddress: account, version: eventVersion };
+      const filter = { withdrawerAddress: account, versions: [5, 6] };
       const res = await withdrawableEvents(graphqlClient, { filter, orderBy, limit, skip, roundBetsAddress: account, includeRoundBets: true });
       if (res.pageInfo) this.hasMore = res.pageInfo.hasNextPage;
       else this.hasMore = false;
