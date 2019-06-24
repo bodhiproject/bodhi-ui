@@ -15,6 +15,7 @@ import { Helmet } from 'react-helmet';
 
 import styles from './styles';
 import AppRouter from './router';
+import NavBar from '../../components/NavBar';
 
 const messages = defineMessages({
   bodhiPredictionMarket: {
@@ -28,6 +29,7 @@ const App = injectIntl(observer(({ classes, intl, match: { url }, store, store: 
     {!store.loading && (
       <Fragment>
         <div className={classes.container}>
+          <NavBar />
           <AppRouter url={url} />
         </div>
         <BottomBar />

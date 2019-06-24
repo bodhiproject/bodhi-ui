@@ -15,6 +15,7 @@ import { DropdownMenuButton, DropdownMenu } from './DropdownMenu';
 import SearchResult from './components/SearchResult';
 import { Favorite } from './Favorite';
 
+let timeout;
 @withStyles(styles, { withTheme: true })
 @injectIntl
 @inject('store')
@@ -22,6 +23,18 @@ import { Favorite } from './Favorite';
 export default class NavBar extends Component {
   componentDidMount() {
     this.props.store.global.getActionableItemCount();
+  }
+
+  state = {
+    clickCount: 0,
+  }
+
+  handleClickLogo = () => {
+    clearTimeout(timeout);
+    const { clickCount } = this.state;
+    this.setState({ clickCount: clickCount + 1 });
+    if (clickCount + 1 === 8) document.getElementsByTagName('audio')[0].play();
+    timeout = setTimeout(() => this.setState({ clickCount: 0 }), 500);
   }
 
   handleSearchBarKeyDown = event => {
@@ -43,7 +56,11 @@ export default class NavBar extends Component {
         <Collapse in={!ui.searchBarMode}>
           <Toolbar className={classes.navBarWrapper}>
             <div className={classes.navSection}>
-              <BodhiLogo {...this.props} />
+              <BodhiLogo {...this.props} onClick={() => this.handleClickLogo()} />
+              {
+                // eslint-disable-next-line
+                <audio className={classes.audio} src="/music/bgm.mp3" />
+              }
               <Hidden xsDown>
                 <Prediction {...this.props} />
                 <Arbitration {...this.props} />
