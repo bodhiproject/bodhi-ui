@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape, defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { Grid, Card, CardContent, withStyles, Typography } from '@material-ui/core';
 import { inject, observer } from 'mobx-react';
-import { Token } from 'constants';
+import { Token, Routes } from 'constants';
 import { SeeAllButton } from 'components';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
@@ -46,15 +46,12 @@ const messages = defineMessages({
 export default class EventResultHistory extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    resultSetsHistory: PropTypes.array.isRequired,
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
   };
 
   renderCardString = (resultSet, intl) => {
     const { store: { naka: { account } } } = this.props;
-    const { eventRound, txSender } = resultSet;
-    let { resultName } = resultSet;
-    if (resultName.length > 20) resultName = shortenText(resultName, 6);
+    const { eventRound, txSender, resultName } = resultSet;
 
     if (eventRound === 0) {
       const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || shortenText(txSender, 6);
@@ -80,10 +77,8 @@ export default class EventResultHistory extends Component {
   }
 
   render() {
-    const { intl, classes, store: { history: { loadingMore, resultHasMore, limit }, eventPage: { event: { address } } } } = this.props;
+    const { intl, classes, store: { history: { loadingMore, resultHasMore, limit, loadMoreResultHistory, resultSetsHistory }, eventPage: { event: { address } }, ui: { location } } } = this.props;
     const url = `/event_history/${address}`;
-    let { resultSetsHistory } = this.props;
-    resultSetsHistory = resultSetsHistory.slice(0, 5);
     const cards = resultSetsHistory.map((resultSet, index) => {
       const { amount, block, txStatus } = resultSet;
       const blockTime = block ? getTimeString(block.blockTime) : intl.formatMessage(messages.strPendingMsg);
@@ -95,7 +90,7 @@ export default class EventResultHistory extends Component {
             <Card
               className={classes.card}
             >
-              <CardContent>
+              <CardContent classes={{ root: classes.cardContent }}>
                 <Typography color='textPrimary'>
                   {this.renderCardString(resultSet, intl)}
                 </Typography>
@@ -121,10 +116,10 @@ export default class EventResultHistory extends Component {
             <InfiniteScroll
               spacing={0}
               data={cards}
-              loadMore={() => {}}
+              loadMore={loadMoreResultHistory}
               loadingMore={loadingMore}
             />
-            {cards.length === limit && resultHasMore && <SeeAllButton url={url} />}
+            {location === Routes.EVENT && cards.length === limit && resultHasMore && <SeeAllButton url={url} />}
           </Fragment>
         ) : (
           <CenteredDiv>

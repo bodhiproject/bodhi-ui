@@ -14,7 +14,7 @@ import {
 import { EVENT_STATUS, Routes } from 'constants';
 import styles from './styles';
 import Option from '../Event/Option';
-import HistoryTable from './HistoryTable';
+import HistoryTable from '../Event/HistoryTable';
 import WinningOutcome from '../Event/WinningOutcome';
 
 const messages = defineMessages({

@@ -273,6 +273,7 @@ export default class {
   loadMoreTransactions = async () => {
     if (this.hasMore) {
       const { ui: { location }, naka: { account }, eventPage: { event } } = this.app;
+      if (location === Routes.EVENT) return;
       const address = event && event.address;
       let filters;
 
@@ -310,6 +311,9 @@ export default class {
   @action
   loadMoreMyTransactions = async () => {
     if (this.myHasMore) {
+      const { ui: { location } } = this.app;
+      if (location === Routes.EVENT) return;
+
       this.loadingMore = true;
       this.mySkip += this.limit;
 
@@ -333,6 +337,9 @@ export default class {
   @action
   loadMoreResultHistory = async () => {
     if (this.resultHasMore) {
+      const { ui: { location } } = this.app;
+      if (location === Routes.EVENT) return;
+
       this.loadingMore = true;
       this.resultSkip += this.limit;
 

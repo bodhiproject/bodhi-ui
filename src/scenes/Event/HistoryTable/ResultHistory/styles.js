@@ -10,10 +10,16 @@ const styles = (theme) => ({
     fontSize: '8px',
   },
   card: {
-    height: '50%',
+    wordBreak: 'break-word',
     borderRadius: '10px',
     boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
     marginTop: theme.padding.space2X.px,
+  },
+  cardContent: {
+    padding: '16px',
+    '&:last-child': {
+      paddingBottom: '16px',
+    },
   },
   grid: {
     borderBottom: theme.border,
