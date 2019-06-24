@@ -51,9 +51,7 @@ export default class EventResultHistory extends Component {
 
   renderCardString = (resultSet, intl) => {
     const { store: { naka: { account } } } = this.props;
-    const { eventRound, txSender } = resultSet;
-    let { resultName } = resultSet;
-    if (resultName.length > 20) resultName = shortenText(resultName, 6);
+    const { eventRound, txSender, resultName } = resultSet;
 
     if (eventRound === 0) {
       const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || shortenText(txSender, 6);
@@ -92,7 +90,7 @@ export default class EventResultHistory extends Component {
             <Card
               className={classes.card}
             >
-              <CardContent>
+              <CardContent classes={{ root: classes.cardContent }}>
                 <Typography color='textPrimary'>
                   {this.renderCardString(resultSet, intl)}
                 </Typography>
