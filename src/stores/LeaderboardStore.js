@@ -145,6 +145,7 @@ export default class {
   loadMoreLeaderboardBets = async () => {
     if (this.hasMore && this.leaderboardBets.length > 0) {
       const { ui: { location }, eventPage: { event } } = this.app;
+      if (location === Routes.EVENT) return;
       const address = event && event.address;
       let filters = {};
 
@@ -178,6 +179,7 @@ export default class {
   loadMoreLeaderboardBiggestWinners = async () => {
     if (this.winnerHasMore && this.leaderboardWinners.length > 0) {
       const { ui: { location }, eventPage: { event } } = this.app;
+      if (location === Routes.EVENT) return;
       const address = event && event.address;
       let filters = {};
 
