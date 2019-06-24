@@ -60,7 +60,7 @@ export default class EventLeaderboard extends Component {
     return (
       <Grid className={classes.optionGrid}>
         {asOptions.map((option, i) => (
-          (status !== EVENT_STATUS.BETTING || ([EVENT_STATUS.PRE_BETTINGEVENT_STATUS.BETTING].includes(status) && i !== asOptions.length - 1)) &&
+          (status !== EVENT_STATUS.BETTING || ([EVENT_STATUS.PRE_BETTING, EVENT_STATUS.BETTING].includes(status) && i !== asOptions.length - 1)) &&
           <Option
             key={i}
             option={option}
