@@ -25,12 +25,14 @@ export default class ImageLocaleWrapper extends Component {
   }
 
   render() {
-    const { intl, src, alt, className } = this.props;
+    const { intl, src, alt, className, onClick } = this.props;
     return (
+      // eslint-disable-next-line
       <img
         src={this.getLocaleSrc(src, intl.locale)}
         alt={alt}
         className={className}
+        onClick={onClick}
       />
     );
   }

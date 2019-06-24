@@ -3,7 +3,6 @@ import NProgress from 'nprogress';
 import ReactPlaceholder from 'react-placeholder';
 import 'nprogress/nprogress.css';
 import 'react-placeholder/lib/reactPlaceholder.css';
-import NavBar from '../components/NavBar';
 
 export default function asyncComponent(importComponent) {
   class AsyncFunc extends React.Component {
@@ -40,7 +39,6 @@ export default function asyncComponent(importComponent) {
       return (
         <ReactPlaceholder type="text" rows={7} ready={Component !== null}>
           <div>
-            <NavBar {...this.props} />
             {Component}
           </div>
         </ReactPlaceholder>

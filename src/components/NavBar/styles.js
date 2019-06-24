@@ -124,6 +124,9 @@ const styles = (theme) => ({
   dropdownMyActivitiesCount: {
     marginLeft: 4,
   },
+  audio: {
+    visibility: 'hidden',
+  },
 });
 
 export default styles;
