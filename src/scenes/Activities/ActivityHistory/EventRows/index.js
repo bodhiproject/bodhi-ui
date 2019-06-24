@@ -160,7 +160,7 @@ class EventRow extends Component {
               className={classes.card}
               onClick={this.onEventNameClick(eventAddress)}
             >
-              <CardContent>
+              <CardContent classes={{ root: classes.cardContent }}>
                 <Typography color='textPrimary'>
                   {this.renderCardString(transaction, intl, classes)}
                 </Typography>

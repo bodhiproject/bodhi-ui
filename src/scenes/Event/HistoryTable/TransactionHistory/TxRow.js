@@ -44,10 +44,7 @@ export default class TxRow extends Component {
   };
 
   renderCardString = (transaction, intl, account) => {
-    const { txType, amount, txSender } = transaction;
-    let { eventName, resultName } = transaction;
-    if (eventName && eventName.length > 20) eventName = shortenText(eventName, 6);
-    if (resultName && resultName.length > 20) resultName = shortenText(resultName, 6);
+    const { txType, amount, txSender, eventName, resultName } = transaction;
     const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || shortenText(txSender, 6);
 
     switch (txType) {
@@ -128,7 +125,7 @@ export default class TxRow extends Component {
           <Card
             className={classes.card}
           >
-            <CardContent>
+            <CardContent classes={{ root: classes.cardContent }}>
               <Typography color='textPrimary'>
                 {this.renderCardString(transaction, intl, account)}
               </Typography>

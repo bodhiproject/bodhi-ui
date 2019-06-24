@@ -34,7 +34,7 @@ export default class HistoryTable extends Component {
   };
 
   render() {
-    const { classes, intl, store: { history: { resultSetsHistory } } } = this.props;
+    const { classes, intl } = this.props;
     const { tabValue } = this.state;
 
     return (
@@ -66,7 +66,7 @@ export default class HistoryTable extends Component {
           <div className={classes.subTableContainer}>
             {tabValue === TAB_ALL_TRANSACTIONS && <TransactionHistory />}
             {tabValue === TAB_MY_TRANSACTIONS && <TransactionHistory showMyTransactions />}
-            {tabValue === TAB_RESULT_HISTORY && <ResultHistory resultSetsHistory={resultSetsHistory} />}
+            {tabValue === TAB_RESULT_HISTORY && <ResultHistory />}
           </div>
         </div>
       </Card>
