@@ -12,4 +12,7 @@ export default styled.div`
   &.option {
     margin-bottom: ${props => props.theme.padding.space3X.px};
   };
+  @media(max-width: 599.95px) {
+    margin-bottom: ${props => props.theme.padding.space2X.px};
+  }
 `;
