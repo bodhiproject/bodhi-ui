@@ -72,6 +72,9 @@ const styles = (theme) => ({
   textFieldInput: {
     height: '30px',
   },
+  createContainer: {
+    padding: `0 ${theme.padding.space2X.px} ${theme.padding.space2X.px}`,
+  },
 });
 
 export default styles;
