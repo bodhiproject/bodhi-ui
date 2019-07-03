@@ -58,6 +58,8 @@ export default (theme) => ({
     marginBottom: '.5rem',
   },
   padLeft: {
-    paddingLeft: theme.padding.space3X.px,
+    [theme.breakpoints.up('sm')]: {
+      paddingLeft: theme.padding.space3X.px,
+    },
   },
 });

@@ -65,7 +65,7 @@ const EventInfoBlock = injectIntl(({ id, content, highlight, intl }) => (
     <Heading>{intl.formatMessage({ id })}</Heading>
     <Content>{content}</Content>
     {highlight && (
-      <Typography variant="body2" color="secondary">
+      <Typography variant="body2" color="secondary" gutterBottom>
         {highlight}
       </Typography>
     )}
@@ -84,7 +84,9 @@ const Content = styled(Typography).attrs({ variant: 'h6' })`
 `;
 
 const Container = styled(Grid).attrs({ item: true })`
-  margin-bottom: 36px !important;
+  @media(min-width: 600px) {
+    margin-bottom: 36px !important;
+  }
 `;
 
 export { SidebarContainer, Sidebar };
