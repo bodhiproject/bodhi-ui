@@ -1,7 +1,9 @@
 const styles = (theme) => ({
   root: {
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.padding.space7X.px,
+    },
     maxWidth: 1000,
-    padding: theme.padding.space7X.px,
   },
   headerText: {
     marginBottom: theme.padding.space2X.px,

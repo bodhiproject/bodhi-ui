@@ -7,7 +7,8 @@ const styles = (theme) => ({
       textAlign: 'left',
     },
     [theme.breakpoints.down('xs')]: {
-      padding: theme.padding.space2X.px,
+      padding: `0 0 ${theme.padding.space2X.px}`,
+      overflowX: 'visible',
     },
     '& h2': {
       [theme.breakpoints.down('xs')]: {

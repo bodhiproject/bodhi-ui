@@ -3,11 +3,17 @@ export default (theme) => ({
     marginBottom: theme.padding.space5X.px,
     fontSize: theme.sizes.font.large,
     wordWrap: 'break-word',
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: theme.padding.space2X.px,
+    },
   },
   actionButton: {
     marginTop: theme.padding.space5X.px,
     background: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
+    [theme.breakpoints.down('xs')]: {
+      marginTop: theme.padding.space2X.px,
+    },
   },
   withdrawingPaper: {
     padding: `${theme.padding.space5X.px} ${theme.padding.space5X.px} 0 ${theme.padding.space5X.px}`,
@@ -15,7 +21,7 @@ export default (theme) => ({
       padding: theme.padding.space2X.px,
     },
     [theme.breakpoints.down('xs')]: {
-      padding: `${theme.padding.space2X.px} ${theme.padding.spaceX.px}`,
+      padding: 0,
     },
     boxShadow: 'none !important',
   },
@@ -58,6 +64,8 @@ export default (theme) => ({
     marginBottom: '.5rem',
   },
   padLeft: {
-    paddingLeft: theme.padding.space3X.px,
+    [theme.breakpoints.up('sm')]: {
+      paddingLeft: theme.padding.space3X.px,
+    },
   },
 });

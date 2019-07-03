@@ -12,7 +12,6 @@ const styles = (theme) => ({
     width: '100%',
     display: 'block',
     position: 'relative',
-    paddingLeft: theme.padding.space3X.px,
     paddingRight: '0 !important',
     marginTop: theme.padding.spaceX.px,
     marginBottom: theme.padding.spaceX.px,
@@ -21,6 +20,9 @@ const styles = (theme) => ({
     },
     '&.last': {
       marginBottom: theme.padding.space2X.px,
+    },
+    [theme.breakpoints.up('sm')]: {
+      paddingLeft: theme.padding.space3X.px,
     },
   },
   eventOptionNum: {
@@ -37,16 +39,6 @@ const styles = (theme) => ({
     position: 'absolute',
     left: 0,
     top: 0,
-  },
-  eventOptionIcon: {
-    height: theme.sizes.icon.large,
-    width: theme.sizes.icon.large,
-    lineHeight: 1,
-    fontSize: theme.sizes.icon.large,
-    color: theme.palette.text.primary,
-    position: 'absolute',
-    left: 0,
-    top: '-7px',
   },
   eventOptionProgress: {
     position: 'relative',
@@ -105,6 +97,10 @@ const styles = (theme) => ({
   expandIcon: {
     top: '-5px',
     width: '38px',
+    [theme.breakpoints.down('xs')]: {
+      width: 'auto',
+      padding: '0px 6px 0px',
+    },
   },
   hideIcon: {
     visibility: 'hidden',
@@ -116,6 +112,16 @@ const styles = (theme) => ({
     position: 'absolute',
     display: 'flex',
     justifyContent: 'space-between',
+  },
+  expansionPanelDetails: {
+    [theme.breakpoints.down('xs')]: {
+      padding: 0,
+    },
+  },
+  expansionPanelSummaryExpanded: {
+    [theme.breakpoints.down('xs')]: {
+      marginTop: '0 !important',
+    },
   },
 });
 

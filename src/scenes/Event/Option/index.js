@@ -106,6 +106,7 @@ export default class Option extends Component {
                 content: classes.expansionPanelSummaryContent,
                 expandIcon: cx(classes.expandIcon, betSpecific && classes.hideIcon),
                 disabled: classes.expansionPanelSummaryDisabled,
+                expanded: classes.expansionPanelSummaryExpanded,
               }}
             >
               <div className={classes.eventOptionWrapper}>
@@ -134,19 +135,17 @@ export default class Option extends Component {
               </div>
             </ExpansionPanelSummary>
             {showAmountInput && (
-              <div>
-                <AmountInput
-                  token={token}
-                  phase={phase}
-                  disabled={amountInputDisabled}
-                  classes={classes}
-                  value={eventPage.amount}
-                  onChange={({ target }) => eventPage.amount = target.value}
-                  onBlur={eventPage.fixAmount}
-                  amountPlaceholder={amountPlaceholder}
-                  error={eventPage.error.amount && intl.formatMessage({ id: eventPage.error.amount })}
-                />
-              </div>
+              <AmountInput
+                token={token}
+                phase={phase}
+                disabled={amountInputDisabled}
+                classes={classes}
+                value={eventPage.amount}
+                onChange={({ target }) => eventPage.amount = target.value}
+                onBlur={eventPage.fixAmount}
+                amountPlaceholder={amountPlaceholder}
+                error={eventPage.error.amount && intl.formatMessage({ id: eventPage.error.amount })}
+              />
             )}
           </ExpansionPanel>
         </div>
@@ -156,13 +155,10 @@ export default class Option extends Component {
 }
 
 const AmountInput = ({ classes, token, phase, amountPlaceholder, error, ...props }) => (
-  <ExpansionPanelDetails>
+  <ExpansionPanelDetails className={classes.expansionPanelDetails}>
     <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
-      <div className={classes.eventOptionIcon}>
-        <i className="icon iconfont icon-ic_token"></i>
-      </div>
       <FormControl fullWidth>
-        <InputLabel htmlFor="amount" shrink>AMOUNT</InputLabel>
+        <InputLabel htmlFor="amount" shrink><i className="icon iconfont icon-ic_token"></i>{' AMOUNT'}</InputLabel>
         <Input
           id="vote-amount"
           type="number"
