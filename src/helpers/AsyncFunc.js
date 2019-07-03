@@ -38,9 +38,7 @@ export default function asyncComponent(importComponent) {
       const Component = this.state.component || <div />;
       return (
         <ReactPlaceholder type="text" rows={7} ready={Component !== null}>
-          <div>
-            {Component}
-          </div>
+          {Component}
         </ReactPlaceholder>
       );
     }
