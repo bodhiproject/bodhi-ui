@@ -457,6 +457,6 @@ export default class {
     const transactionSkips = { eventSkip: 0, betSkip: 0, resultSetSkip: 0, withdrawSkip: 0 };
     const res = await transactions(graphqlClient, { filter: filters, limit, transactionSkips });
 
-    return res;
+    return res.items;
   }
 }
