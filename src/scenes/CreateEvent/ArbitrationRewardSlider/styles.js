@@ -14,6 +14,6 @@ export default (theme) => ({
   },
   slider: {
     flex: 1,
-    margin: `0 ${theme.padding.space3X.px}`,
+    marginTop: theme.padding.space5X.px,
   },
 });

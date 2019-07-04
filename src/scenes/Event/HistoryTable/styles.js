@@ -9,7 +9,9 @@ const styles = (theme) => ({
   subTableContainer: {
   },
   mainTableContainer: {
-    marginTop: theme.padding.space5X.px,
+    [theme.breakpoints.up('sm')]: {
+      marginTop: theme.padding.space5X.px,
+    },
   },
 });
 

@@ -57,7 +57,7 @@ export default class CreateEvent extends Component {
       <Fragment>
         <BackButton />
         <PageContainer>
-          <ContentContainer noSideBar>
+          <ContentContainer noSideBar className={classes.createContainer}>
             <Typography variant="h4" className={classes.title}>
               <FormattedMessage id="str.createEvent" defaultMessage="Create Event" />
             </Typography>

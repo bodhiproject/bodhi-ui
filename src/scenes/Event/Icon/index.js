@@ -11,5 +11,4 @@ export default styled(({ type = '', className }) => (
   color: ${props => props.theme.palette.text.primary};
   position: absolute;
   left: 0;
-  top: -7px;
 `;
