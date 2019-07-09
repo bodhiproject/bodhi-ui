@@ -185,6 +185,7 @@ export default class TransactionStore {
       }
 
       // Execute tx
+      logger.error('before');
       const { network } = this.app.naka;
       const nbotMethods = window.naka.eth.contract(NakaBodhiToken().abi)
         .at(NakaBodhiToken()[network.toLowerCase()]);
