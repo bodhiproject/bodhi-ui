@@ -21,6 +21,7 @@ import {
   ALL_STATS,
   PAGINATED_MOST_BETS,
   PAGINATED_BIGGEST_WINNER,
+  PAGINATED_LEADERBOARD_ENTRY,
 } from './schema';
 
 const QUERY_EVENTS = 'events';
@@ -247,6 +248,42 @@ const QUERIES = {
         skip: $skip
       ) {
         ${PAGINATED_BIGGEST_WINNER}
+      }
+    }
+  `,
+
+  eventLeaderboardEntries: gql`
+    query(
+      $filter: LeaderboardEntryFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      eventLeaderboardEntries(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_LEADERBOARD_ENTRY}
+      }
+    }
+  `,
+
+  globalLeaderboardEntries: gql`
+    query(
+      $filter: LeaderboardEntryFilter
+      $orderBy: [Order!]
+      $limit: Int
+      $skip: Int
+    ) {
+      eventLeaderboardEntries(
+        filter: $filter
+        orderBy: $orderBy
+        limit: $limit
+        skip: $skip
+      ) {
+        ${PAGINATED_LEADERBOARD_ENTRY}
       }
     }
   `,

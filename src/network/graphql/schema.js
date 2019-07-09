@@ -222,3 +222,17 @@ export const PAGINATED_BIGGEST_WINNER = `
   pageInfo { ${PAGE_INFO} }
   items { ${BIGGEST_WINNER} }
 `;
+
+export const LEADERBOARD_ENTRY = `
+  eventAddress
+  userAddress
+  investments
+  winnings
+  returnRatio
+`;
+
+export const PAGINATED_LEADERBOARD_ENTRY = `
+  totalCount
+  pageInfo { ${PAGE_INFO} }
+  items { ${LEADERBOARD_ENTRY} }
+`;
