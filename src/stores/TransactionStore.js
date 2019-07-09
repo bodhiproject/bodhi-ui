@@ -195,7 +195,10 @@ export default class TransactionStore {
         escrowAmt: amountSatoshi,
         gas: 3000000,
       });
+      logger.error('txid1', txid);
       // TODO: remove after mobile apps are done debugging
+      logger.error('Returned to dapp after create event');
+
       console.log('Returned to dapp after create event');
 
       if (!txid) {
@@ -218,9 +221,14 @@ export default class TransactionStore {
           language,
         });
 
+        logger.error('comess here');
+
         await this.onTxExecuted(res);
+        logger.error('onTx');
+
         Tracking.track('event-createEvent');
       }
+      logger.error('txid22', txid);
       return txid;
     } catch (err) {
       logger.error('TransactionStore.executeCreateEvent', err);
