@@ -90,13 +90,14 @@ export default class TransactionStore {
 
       // Send tx
       const pbtParams = this.getPayByTokenParams();
-      logger.error('testt333', pbtParams);
+      logger.error('testt555', pbtParams);
       return new Promise((resolve, reject) => {
         nbotMethods.transfer['address,uint256,bytes'].sendTransaction(eventFactoryAddr, escrowAmt, data, {
           gas,
           ...pbtParams,
         }, (err, res) => {
           resolve(res);
+          logger.error('res', res);
           // console.log('TCL: TransactionStore -> err', err);
           // console.log('TCL: TransactionStore -> res', res);
         });
