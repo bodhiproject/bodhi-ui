@@ -36,6 +36,8 @@ const QUERY_TOTAL_RESULT_BETS = 'totalResultBets';
 const QUERY_ALL_STATS = 'allStats';
 const QUERY_MOST_BETS = 'mostBets';
 const QUERY_BIGGEST_WINNERS = 'biggestWinners';
+const QUERY_EVENT_LEADERBOARD_ENTRIES = 'eventLeaderboardEntries';
+const QUERY_GLOBAL_LEADERBOARD_ENTRIES = 'globalLeaderboardEntries';
 /**
  * Example query arguments:
  * - filter: { status: 'BETTING' }
@@ -458,4 +460,24 @@ export async function mostBets(client, args) {
  */
 export async function biggestWinners(client, args) {
   return new GraphQuery(client, QUERY_BIGGEST_WINNERS, args).execute();
+}
+
+/**
+ * Queries the event leaderboard entry based on an event address.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function eventLeaderboardEntries(client, args) {
+  return new GraphQuery(client, QUERY_EVENT_LEADERBOARD_ENTRIES, args).execute();
+}
+
+/**
+ * Queries the global leaderboard entry based on an event address.
+ * @param {ApolloClient} client Apollo Client instance.
+ * @param {object} args Arguments for the query.
+ * @return {object} Query result.
+ */
+export async function globalLeaderboardEntries(client, args) {
+  return new GraphQuery(client, QUERY_GLOBAL_LEADERBOARD_ENTRIES, args).execute();
 }
