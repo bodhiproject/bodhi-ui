@@ -1,6 +1,8 @@
 import { action } from 'mobx';
 import { AbiCoder } from 'web3-eth-abi';
 import promisify from 'js-promisify';
+import { promisify as lll } from 'es6-promisify';
+
 import { utf8ToHex, padRight } from 'web3-utils';
 import { cloneDeep } from 'lodash';
 import logger from 'loglevel';
@@ -89,13 +91,11 @@ export default class TransactionStore {
       // Send tx
       const pbtParams = this.getPayByTokenParams();
       logger.error('123232', pbtParams);
-      const txid = await promisify(
-        nbotMethods.transfer['address,uint256,bytes'].sendTransaction,
-        [eventFactoryAddr, escrowAmt, data, {
-          gas,
-          ...pbtParams,
-        }]
-      );
+      const qqq = lll(nbotMethods.transfer['address,uint256,bytes'].sendTransaction);
+      const txid = await qqq(eventFactoryAddr, escrowAmt, data, {
+        gas,
+        ...pbtParams,
+      });
       logger.error('qqqqqq');
       return txid;
     } catch (err) {
