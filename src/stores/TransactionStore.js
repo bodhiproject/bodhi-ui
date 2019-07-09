@@ -88,6 +88,7 @@ export default class TransactionStore {
 
       // Send tx
       const pbtParams = this.getPayByTokenParams();
+      logger.error('123232', pbtParams);
       const txid = await promisify(
         nbotMethods.transfer['address,uint256,bytes'].sendTransaction,
         [eventFactoryAddr, escrowAmt, data, {
@@ -95,6 +96,7 @@ export default class TransactionStore {
           ...pbtParams,
         }]
       );
+      logger.error('qqqqqq');
       return txid;
     } catch (err) {
       logger.error('TransactionStore.createEvent', err);
