@@ -90,14 +90,17 @@ export default class TransactionStore {
 
       // Send tx
       const pbtParams = this.getPayByTokenParams();
-      logger.error('testt111', pbtParams);
-      const qqq = lll(nbotMethods.transfer['address,uint256,bytes'].sendTransaction);
-      const txid = await qqq(eventFactoryAddr, escrowAmt, data, {
-        gas,
-        ...pbtParams,
+      logger.error('testt333', pbtParams);
+      return new Promise((resolve, reject) => {
+        nbotMethods.transfer['address,uint256,bytes'].sendTransaction(eventFactoryAddr, escrowAmt, data, {
+          gas,
+          ...pbtParams,
+        }, (err, res) => {
+          resolve(res);
+          // console.log('TCL: TransactionStore -> err', err);
+          // console.log('TCL: TransactionStore -> res', res);
+        });
       });
-      logger.error('qqqqqq');
-      return txid;
     } catch (err) {
       logger.error('TransactionStore.createEvent', err);
       return undefined;
