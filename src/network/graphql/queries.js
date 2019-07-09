@@ -463,7 +463,7 @@ export async function biggestWinners(client, args) {
 }
 
 /**
- * Queries the event leaderboard entry based on an event address.
+ * Queries the event leaderboard entry based on event address and/or user address.
  * @param {ApolloClient} client Apollo Client instance.
  * @param {object} args Arguments for the query.
  * @return {object} Query result.
@@ -473,7 +473,7 @@ export async function eventLeaderboardEntries(client, args) {
 }
 
 /**
- * Queries the global leaderboard entry based on an event address.
+ * Queries the global leaderboard entry based on a user address.
  * @param {ApolloClient} client Apollo Client instance.
  * @param {object} args Arguments for the query.
  * @return {object} Query result.

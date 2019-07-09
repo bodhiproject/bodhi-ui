@@ -9,6 +9,7 @@ import {
   events,
   totalResultBets,
   withdraws,
+  eventLeaderboardEntries,
 } from '../../network/graphql/queries';
 import { maxTransactionFee } from '../../config/app';
 
@@ -304,21 +305,15 @@ export default class EventStore {
     const address = this.event && this.event.address;
     if (!address || !this.app.wallet.currentAddress) return;
 
-    // If we have already called calculateWinnings before,
-    // only call it again every 5 blocks.
-    if (!isUndefined(this.nbotWinnings) && this.app.global.syncBlockNum % 5 !== 0) {
-      return;
-    }
-
     try {
-      const { data } = await axios.get(API.CALCULATE_WINNINGS, {
-        params: {
-          // calcaulateWinnings working event address: 0xe272f0793b97a3606f7a4e1eed2abaded67a9376
+      const res = await eventLeaderboardEntries(this.app.graphqlClient, {
+        filter: {
           eventAddress: address,
-          address: this.app.wallet.currentAddress,
+          userAddress: this.app.wallet.currentAddress,
         },
       });
-      this.nbotWinnings = satoshiToDecimal(data.result);
+      if (res.items.length === 0) return;
+      this.nbotWinnings = satoshiToDecimal(res.items[0].winnings);
       this.returnRate = ((this.nbotWinnings - this.totalInvestment) / this.totalInvestment) * 100;
       this.profitOrLoss = this.nbotWinnings - this.totalInvestment;
     } catch (error) {
