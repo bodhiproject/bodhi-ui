@@ -90,7 +90,7 @@ export default class TransactionStore {
 
       // Send tx
       const pbtParams = this.getPayByTokenParams();
-      logger.error('123232', pbtParams);
+      logger.error('testt111', pbtParams);
       const qqq = lll(nbotMethods.transfer['address,uint256,bytes'].sendTransaction);
       const txid = await qqq(eventFactoryAddr, escrowAmt, data, {
         gas,
