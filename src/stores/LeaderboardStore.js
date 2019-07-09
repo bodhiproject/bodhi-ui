@@ -1,7 +1,7 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import { isEmpty } from 'lodash';
-import { Routes } from 'constants';
-import { mostBets, allStats, biggestWinners, eventLeaderboardEntries, globalLeaderboardEntries } from '../network/graphql/queries';
+import { Routes, SortBy } from 'constants';
+import { allStats, eventLeaderboardEntries, globalLeaderboardEntries } from '../network/graphql/queries';
 import { satoshiToDecimal } from '../helpers/utility';
 
 const EVENT_LEADERBOARD_LIMIT = 10;
@@ -210,20 +210,19 @@ export default class {
 
   /**
    * Gets the leaderboard bets via API call.
-   * @return {[MostBet]} leaderboard array of the query.
+   * @return {[LeaderboardEntries]} leaderboard array of the query.
    */
   fetchLeaderboardBets = async (filters = {}, limit = this.leaderboardLimit, skip = this.skip) => {
     const { graphqlClient } = this.app;
-
+    const orderBy = { field: 'investments', direction: SortBy.DESCENDING };
     let res;
     if (isEmpty(filters)) {
-      res = await globalLeaderboardEntries(graphqlClient, { limit, skip });
+      res = await globalLeaderboardEntries(graphqlClient, { orderBy, limit, skip });
     } else {
-      res = await eventLeaderboardEntries(graphqlClient, { filter: filters, limit, skip });
+      res = await eventLeaderboardEntries(graphqlClient, { filter: filters, orderBy, limit, skip });
     }
 
     const { items, pageInfo } = res;
-    console.log('TCL: fetchLeaderboardBets -> items', items);
 
     if (pageInfo) {
       this.hasMore = pageInfo.hasNextPage;
@@ -234,14 +233,14 @@ export default class {
 
   /**
    * Gets the leaderboard winners via API call.
-   * @return {[BiggestWinner]} leaderboard array of the query.
+   * @return {[LeaderboardEntries]} leaderboard array of the query.
    */
   fetchLeaderboardWinners = async (filters = {}, limit = this.leaderboardLimit, skip = this.winnerSkip) => {
     // Address is required for the request filters
     if (!isEmpty(filters)) {
       const { graphqlClient } = this.app;
-
-      const res = await biggestWinners(graphqlClient, { filter: filters, limit, skip });
+      const orderBy = { field: 'winnings', direction: SortBy.DESCENDING };
+      const res = await eventLeaderboardEntries(graphqlClient, { filter: filters, orderBy, limit, skip });
 
       const { items, pageInfo } = res;
 

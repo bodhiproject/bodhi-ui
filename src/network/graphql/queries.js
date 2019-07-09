@@ -19,8 +19,6 @@ import {
   SYNC_INFO,
   TOTAL_RESULT_BETS,
   ALL_STATS,
-  PAGINATED_MOST_BETS,
-  PAGINATED_BIGGEST_WINNER,
   PAGINATED_LEADERBOARD_ENTRY,
 } from './schema';
 
@@ -34,8 +32,6 @@ const QUERY_TRANSACTIONS = 'transactions';
 const QUERY_SYNC_INFO = 'syncInfo';
 const QUERY_TOTAL_RESULT_BETS = 'totalResultBets';
 const QUERY_ALL_STATS = 'allStats';
-const QUERY_MOST_BETS = 'mostBets';
-const QUERY_BIGGEST_WINNERS = 'biggestWinners';
 const QUERY_EVENT_LEADERBOARD_ENTRIES = 'eventLeaderboardEntries';
 const QUERY_GLOBAL_LEADERBOARD_ENTRIES = 'globalLeaderboardEntries';
 /**
@@ -214,42 +210,6 @@ const QUERIES = {
     query {
       allStats {
         ${ALL_STATS}
-      }
-    }
-  `,
-
-  mostBets: gql`
-    query(
-      $filter: BetFilter
-      $orderBy: [Order!]
-      $limit: Int
-      $skip: Int
-    ) {
-      mostBets(
-        filter: $filter
-        orderBy: $orderBy
-        limit: $limit
-        skip: $skip
-      ) {
-        ${PAGINATED_MOST_BETS}
-      }
-    }
-  `,
-
-  biggestWinners: gql`
-    query(
-      $filter: BetFilter
-      $orderBy: [Order!]
-      $limit: Int
-      $skip: Int
-    ) {
-      biggestWinners(
-        filter: $filter
-        orderBy: $orderBy
-        limit: $limit
-        skip: $skip
-      ) {
-        ${PAGINATED_BIGGEST_WINNER}
       }
     }
   `,
@@ -440,26 +400,6 @@ export async function totalResultBets(client, args) {
  */
 export async function allStats(client) {
   return new GraphQuery(client, QUERY_ALL_STATS).execute();
-}
-
-/**
- * Queries most bets given the filters.
- * @param {ApolloClient} client Apollo Client instance.
- * @param {object} args Arguments for the query.
- * @return {object} Query result.
- */
-export async function mostBets(client, args) {
-  return new GraphQuery(client, QUERY_MOST_BETS, args).execute();
-}
-
-/**
- * Queries the biggest winners based on an event address.
- * @param {ApolloClient} client Apollo Client instance.
- * @param {object} args Arguments for the query.
- * @return {object} Query result.
- */
-export async function biggestWinners(client, args) {
-  return new GraphQuery(client, QUERY_BIGGEST_WINNERS, args).execute();
 }
 
 /**

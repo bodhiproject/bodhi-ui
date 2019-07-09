@@ -199,30 +199,6 @@ export const ALL_STATS = `
   totalBets
 `;
 
-export const MOST_BET = `
-  eventAddress
-  betterAddress
-  amount
-`;
-
-export const PAGINATED_MOST_BETS = `
-  totalCount
-  pageInfo { ${PAGE_INFO} }
-  items { ${MOST_BET} }
-`;
-
-export const BIGGEST_WINNER = `
-  eventAddress
-  betterAddress
-  amount
-`;
-
-export const PAGINATED_BIGGEST_WINNER = `
-  totalCount
-  pageInfo { ${PAGE_INFO} }
-  items { ${BIGGEST_WINNER} }
-`;
-
 export const LEADERBOARD_ENTRY = `
   eventAddress
   userAddress
