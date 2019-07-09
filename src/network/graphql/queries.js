@@ -279,7 +279,7 @@ const QUERIES = {
       $limit: Int
       $skip: Int
     ) {
-      eventLeaderboardEntries(
+      globalLeaderboardEntries(
         filter: $filter
         orderBy: $orderBy
         limit: $limit
@@ -479,5 +479,6 @@ export async function eventLeaderboardEntries(client, args) {
  * @return {object} Query result.
  */
 export async function globalLeaderboardEntries(client, args) {
-  return new GraphQuery(client, QUERY_GLOBAL_LEADERBOARD_ENTRIES, args).execute();
+  const res = await new GraphQuery(client, QUERY_GLOBAL_LEADERBOARD_ENTRIES, args).execute();
+  return res;
 }

@@ -59,13 +59,14 @@ export default class Leaderboard extends React.Component {
   }
 
   renderEntry = (row, index) => {
-    const { classes, intl, store: { naka: { account } } } = this.props;
-    const { betterAddress, amount } = row;
-    if (!betterAddress) return;
+    const { classes, intl, store: { naka: { account }, leaderboard: { activeStep } } } = this.props;
+    const { userAddress, investments, winnings } = row;
+    if (!userAddress) return;
+    const amount = activeStep === 0 ? investments : winnings;
     const ranking = (index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='cup' />)
       || (index === 3 && '👍') || (index >= 4 && '✊');
 
-    const address = (account && account.toLowerCase() === betterAddress && intl.formatMessage(messages.strYou)) || shortenText(betterAddress, 6);
+    const address = (account && account.toLowerCase() === userAddress && intl.formatMessage(messages.strYou)) || shortenText(userAddress, 6);
     return (
       <Grid container className={classes.grid} key={index} alignItems='center'>
         <Grid item xs={1}>

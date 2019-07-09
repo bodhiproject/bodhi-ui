@@ -1,7 +1,7 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import { isEmpty } from 'lodash';
 import { Routes } from 'constants';
-import { mostBets, allStats, biggestWinners } from '../network/graphql/queries';
+import { mostBets, allStats, biggestWinners, eventLeaderboardEntries, globalLeaderboardEntries } from '../network/graphql/queries';
 import { satoshiToDecimal } from '../helpers/utility';
 
 const EVENT_LEADERBOARD_LIMIT = 10;
@@ -217,12 +217,13 @@ export default class {
 
     let res;
     if (isEmpty(filters)) {
-      res = await mostBets(graphqlClient, { limit, skip });
+      res = await globalLeaderboardEntries(graphqlClient, { limit, skip });
     } else {
-      res = await mostBets(graphqlClient, { filter: filters, limit, skip });
+      res = await eventLeaderboardEntries(graphqlClient, { filter: filters, limit, skip });
     }
 
     const { items, pageInfo } = res;
+    console.log('TCL: fetchLeaderboardBets -> items', items);
 
     if (pageInfo) {
       this.hasMore = pageInfo.hasNextPage;
