@@ -235,6 +235,29 @@ export default class {
   }
 
   /**
+   * Queries another batches of leaderboard return ratio and appends it to the full list.
+   */
+  @action
+  loadMoreLeaderboardReturnRatio = async () => {
+    if (this.returnRatioHasMore && this.leaderboardReturnRatio.length > 0) {
+      this.loadingMore = true;
+      this.returnRatioSkip += this.leaderboardLimit;
+
+      try {
+        const moreReturnRatios = await this.fetchLeaderboardReturnRatio();
+
+        runInAction(() => {
+          this.leaderboardReturnRatio = [...this.leaderboardReturnRatio, ...moreReturnRatios];
+          this.leaderboardDisplay = this.leaderboardReturnRatio;
+          this.loadingMore = false; // stop showing the loading icon
+        });
+      } catch (e) {
+        this.returnRatioSkip -= this.leaderboardLimit;
+      }
+    }
+  }
+
+  /**
    * Gets the leaderboard bets via API call.
    * @return {[LeaderboardEntries]} leaderboard array of the query.
    */

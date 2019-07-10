@@ -98,12 +98,19 @@ export default class Leaderboard extends React.Component {
     return intl.formatMessage(messages.biggestWinner);
   }
 
+  getLeaderboardLoadMore = (location, activeStep) => {
+    const { store: { leaderboard: { loadMoreLeaderboardBets, loadMoreLeaderboardBiggestWinners, loadMoreLeaderboardReturnRatio } } } = this.props;
+    if (activeStep === 0) return loadMoreLeaderboardBets;
+    else if (location === Routes.LEADERBOARD) return loadMoreLeaderboardReturnRatio;
+    return loadMoreLeaderboardBiggestWinners;
+  }
+
   render() {
     const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location },
-      leaderboard: { leaderboardDisplay, activeStep, loadMoreLeaderboardBets, loadMoreLeaderboardBiggestWinners, loadingMore, leaderboardLimit, diaplayHasMore } } } = this.props;
+      leaderboard: { leaderboardDisplay, activeStep, loadingMore, leaderboardLimit, diaplayHasMore } } } = this.props;
     const url = event ? `/event_leaderboard/${event.address}` : undefined;
     const leaderboardTitle = this.getLeaderboardTitle(intl, location, activeStep);
-
+    const leaderboardLoadMore = this.getLeaderboardLoadMore(location, activeStep);
     const displays = leaderboardDisplay.map((row, index) => this.renderEntry(row, index));
     return (
       <Card>
@@ -135,7 +142,7 @@ export default class Leaderboard extends React.Component {
               <InfiniteScroll
                 spacing={0}
                 data={displays}
-                loadMore={activeStep === 0 ? loadMoreLeaderboardBets : loadMoreLeaderboardBiggestWinners}
+                loadMore={leaderboardLoadMore}
                 loadingMore={loadingMore}
                 noEmptyPlaceholder
               />
