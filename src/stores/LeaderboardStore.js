@@ -14,6 +14,7 @@ const INIT_VALUES = {
   leaderboardBets: [],
   leaderboardWinners: [],
   leaderboardDisplay: [],
+  leaderboardReturnRatio: [],
   activeStep: 0,
   leaderboardLimit: 0,
   skip: 0,
@@ -23,6 +24,8 @@ const INIT_VALUES = {
   loadingMore: false,
   diaplayHasMore: true,
   loading: false,
+  returnRatioSkip: 0,
+  returnRatioHasMore: true,
 };
 
 export default class {
@@ -40,6 +43,10 @@ export default class {
   @observable leaderboardWinners = INIT_VALUES.leaderboardWinners
   winnerSkip = INIT_VALUES.winnerSkip;
   @observable winnerHasMore = INIT_VALUES.winnerHasMore;
+  // for return ratio
+  returnRatioSkip = INIT_VALUES.returnRatioSkip;
+  @observable returnRatioHasMore = INIT_VALUES.returnRatioHasMore;
+  @observable leaderboardReturnRatio = INIT_VALUES.leaderboardReturnRatio;
 
   @observable diaplayHasMore = INIT_VALUES.diaplayHasMore;
   loading = INIT_VALUES.loading;
@@ -64,6 +71,9 @@ export default class {
         if (this.activeStep < 1) {
           this.leaderboardDisplay = this.leaderboardBets;
           this.diaplayHasMore = this.hasMore;
+        } else if (this.app.ui.location === Routes.LEADERBOARD) {
+          this.leaderboardDisplay = this.leaderboardReturnRatio;
+          this.diaplayHasMore = this.returnRatioHasMore;
         } else {
           this.leaderboardDisplay = this.leaderboardWinners;
           this.diaplayHasMore = this.winnerHasMore;
@@ -98,19 +108,23 @@ export default class {
       this.leaderboardLimit = GLOBAL_LEADERBOARD_LIMIT;
       const res = await allStats(this.app.graphqlClient);
       Object.assign(this, res, { totalBets: satoshiToDecimal(res.totalBets) });
+      await this.loadFirstLeaderboardBets();
+      await this.loadFirstLeaderboardReturnRatio();
     } else if (location === Routes.EVENT) {
       this.leaderboardLimit = EVENT_DETAIL_LEADERBOARD_LIMIT;
       if (!address) return;
 
       filters = { eventAddress: address };
+      await this.loadFirstLeaderboardBets(filters);
+      await this.loadFirstBiggestWinners(filters);
     } else if (location === Routes.EVENT_LEADERBOARD) {
       this.leaderboardLimit = EVENT_LEADERBOARD_LIMIT;
       if (!address) return;
 
       filters = { eventAddress: address };
+      await this.loadFirstLeaderboardBets(filters);
+      await this.loadFirstBiggestWinners(filters);
     }
-    await this.loadFirstLeaderboardBets(filters);
-    await this.loadFirstBiggestWinners(filters);
     this.loading = false;
     this.leaderboardDisplay = this.leaderboardBets;
     this.diaplayHasMore = this.hasMore;
@@ -132,6 +146,18 @@ export default class {
   @action
   loadFirstLeaderboardBets = async (filters) => {
     this.leaderboardBets = await this.fetchLeaderboardBets(filters);
+
+    runInAction(() => {
+      this.loaded = true;
+    });
+  }
+
+  /**
+   * Load the first 10 or 5 txs depending on the location
+   */
+  @action
+  loadFirstLeaderboardReturnRatio = async () => {
+    this.leaderboardReturnRatio = await this.fetchLeaderboardReturnRatio();
 
     runInAction(() => {
       this.loaded = true;
@@ -209,6 +235,29 @@ export default class {
   }
 
   /**
+   * Queries another batches of leaderboard return ratio and appends it to the full list.
+   */
+  @action
+  loadMoreLeaderboardReturnRatio = async () => {
+    if (this.returnRatioHasMore && this.leaderboardReturnRatio.length > 0) {
+      this.loadingMore = true;
+      this.returnRatioSkip += this.leaderboardLimit;
+
+      try {
+        const moreReturnRatios = await this.fetchLeaderboardReturnRatio();
+
+        runInAction(() => {
+          this.leaderboardReturnRatio = [...this.leaderboardReturnRatio, ...moreReturnRatios];
+          this.leaderboardDisplay = this.leaderboardReturnRatio;
+          this.loadingMore = false; // stop showing the loading icon
+        });
+      } catch (e) {
+        this.returnRatioSkip -= this.leaderboardLimit;
+      }
+    }
+  }
+
+  /**
    * Gets the leaderboard bets via API call.
    * @return {[LeaderboardEntries]} leaderboard array of the query.
    */
@@ -251,5 +300,23 @@ export default class {
       return items;
     }
     return INIT_VALUES.leaderboardWinners;
+  }
+
+  /**
+   * Gets the leaderboard return ratio via API call.
+   * @return {[LeaderboardEntries]} leaderboard array of the query.
+   */
+  fetchLeaderboardReturnRatio = async (limit = this.leaderboardLimit, skip = this.returnRatioSkip) => {
+    const { graphqlClient } = this.app;
+    const orderBy = { field: 'returnRatio', direction: SortBy.DESCENDING };
+    const res = await globalLeaderboardEntries(graphqlClient, { orderBy, limit, skip });
+
+    const { items, pageInfo } = res;
+
+    if (pageInfo) {
+      this.returnRatioHasMore = pageInfo.hasNextPage;
+    } else if (!pageInfo) this.returnRatioHasMore = false;
+
+    return items;
   }
 }

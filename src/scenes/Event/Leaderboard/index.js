@@ -19,12 +19,15 @@ const messages = defineMessages({
     id: 'leaderboard.biggestWinners',
     defaultMessage: 'Biggest Winners',
   },
+  returnRatio: {
+    id: 'leaderboard.returnRatio',
+    defaultMessage: 'Return Ratio',
+  },
   strYou: {
     id: 'str.you',
     defaultMessage: 'You',
   },
 });
-const tabs = [messages.mostNBOT, messages.biggestWinner];
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
@@ -59,10 +62,13 @@ export default class Leaderboard extends React.Component {
   }
 
   renderEntry = (row, index) => {
-    const { classes, intl, store: { naka: { account }, leaderboard: { activeStep } } } = this.props;
-    const { userAddress, investments, winnings } = row;
+    const { classes, intl, store: { naka: { account }, leaderboard: { activeStep }, ui: { location } } } = this.props;
+    const { userAddress, investments, winnings, returnRatio } = row;
     if (!userAddress) return;
-    const amount = activeStep === 0 ? investments : winnings;
+    let amount;
+    if (activeStep === 0) amount = toFixed(satoshiToDecimal(investments), true);
+    else if (location === Routes.LEADERBOARD) amount = `${(returnRatio * 100).toFixed(2)}%`;
+    else amount = toFixed(satoshiToDecimal(winnings), true);
     const ranking = (index <= 2 && <img src={`/images/ic_${index + 1}_cup.svg`} alt='cup' />)
       || (index === 3 && '👍') || (index >= 4 && '✊');
 
@@ -79,18 +85,32 @@ export default class Leaderboard extends React.Component {
         </Grid>
         <Grid item xs={3}>
           <Typography>
-            {toFixed(satoshiToDecimal(amount), true)}
+            {amount}
           </Typography>
         </Grid>
       </Grid>
     );
   }
 
+  getLeaderboardTitle = (intl, location, activeStep) => {
+    if (activeStep === 0) return intl.formatMessage(messages.mostNBOT);
+    else if (location === Routes.LEADERBOARD) return intl.formatMessage(messages.returnRatio);
+    return intl.formatMessage(messages.biggestWinner);
+  }
+
+  getLeaderboardLoadMore = (location, activeStep) => {
+    const { store: { leaderboard: { loadMoreLeaderboardBets, loadMoreLeaderboardBiggestWinners, loadMoreLeaderboardReturnRatio } } } = this.props;
+    if (activeStep === 0) return loadMoreLeaderboardBets;
+    else if (location === Routes.LEADERBOARD) return loadMoreLeaderboardReturnRatio;
+    return loadMoreLeaderboardBiggestWinners;
+  }
+
   render() {
     const { classes, theme, intl, maxSteps, store: { eventPage: { event }, ui: { location },
-      leaderboard: { leaderboardDisplay, activeStep, loadMoreLeaderboardBets, loadMoreLeaderboardBiggestWinners, loadingMore, leaderboardLimit, diaplayHasMore } } } = this.props;
+      leaderboard: { leaderboardDisplay, activeStep, loadingMore, leaderboardLimit, diaplayHasMore } } } = this.props;
     const url = event ? `/event_leaderboard/${event.address}` : undefined;
-
+    const leaderboardTitle = this.getLeaderboardTitle(intl, location, activeStep);
+    const leaderboardLoadMore = this.getLeaderboardLoadMore(location, activeStep);
     const displays = leaderboardDisplay.map((row, index) => this.renderEntry(row, index));
     return (
       <Card>
@@ -105,7 +125,7 @@ export default class Leaderboard extends React.Component {
               position="static"
               activeStep={activeStep}
               className={classes.mobileStepper}
-              currentValue={intl.formatMessage(tabs[activeStep])}
+              currentValue={leaderboardTitle}
               nextButton={
                 <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
                   {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
@@ -122,7 +142,7 @@ export default class Leaderboard extends React.Component {
               <InfiniteScroll
                 spacing={0}
                 data={displays}
-                loadMore={activeStep === 0 ? loadMoreLeaderboardBets : loadMoreLeaderboardBiggestWinners}
+                loadMore={leaderboardLoadMore}
                 loadingMore={loadingMore}
                 noEmptyPlaceholder
               />
