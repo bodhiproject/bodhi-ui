@@ -419,6 +419,5 @@ export async function eventLeaderboardEntries(client, args) {
  * @return {object} Query result.
  */
 export async function globalLeaderboardEntries(client, args) {
-  const res = await new GraphQuery(client, QUERY_GLOBAL_LEADERBOARD_ENTRIES, args).execute();
-  return res;
+  return new GraphQuery(client, QUERY_GLOBAL_LEADERBOARD_ENTRIES, args).execute();
 }
