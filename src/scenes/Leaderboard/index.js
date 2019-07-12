@@ -43,7 +43,7 @@ export default class Leaderboard extends Component {
           <Card title={messages.totalBets} value={totalBets} />
         </SidebarContainer>
         <ContentContainer>
-          <_Leaderboard maxSteps={1} />
+          <_Leaderboard maxSteps={2} />
         </ContentContainer>
       </PageContainer>
     );
