@@ -149,12 +149,14 @@ export const PAGINATED_TRANSACTIONS = `
     ... on MultipleResultsEvent {
       address
       ownerAddress
+      ownerName
       name
       escrowAmount
     }
     ... on Bet {
       eventAddress
       betterAddress
+      betterName
       resultIndex
       amount
       eventRound
@@ -164,6 +166,7 @@ export const PAGINATED_TRANSACTIONS = `
     ... on ResultSet {
       eventAddress
       centralizedOracleAddress
+      centralizedOracleName
       resultIndex
       amount
       eventRound
@@ -173,6 +176,7 @@ export const PAGINATED_TRANSACTIONS = `
     ... on Withdraw {
       eventAddress
       winnerAddress
+      winnerName
       winningAmount
       escrowWithdrawAmount
       eventName

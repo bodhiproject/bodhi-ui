@@ -8,6 +8,7 @@ export default class Withdraw {
   block // Block info returned when confirmed
   eventAddress // Event contract address
   winnerAddress // Winner address
+  winnerName // Winner name
   txSender // Transaction sender address
   winningAmount // Won amount in decimals
   winningAmountSatoshi // Won amount in satoshi

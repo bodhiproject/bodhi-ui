@@ -8,6 +8,7 @@ export default class Bet {
   block // Block info returned when confirmed
   eventAddress // Event contract address
   betterAddress // Better's address
+  betterName // Better's name
   txSender // Transaction sender address, same as above
   resultIndex // Result index the bet was placed on
   amount // Bet amount in decimals
