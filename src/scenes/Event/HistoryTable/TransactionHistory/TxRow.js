@@ -44,8 +44,8 @@ export default class TxRow extends Component {
   };
 
   renderCardString = (transaction, intl, account) => {
-    const { txType, amount, txSender, eventName, resultName } = transaction;
-    const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || shortenText(txSender, 6);
+    const { txType, amount, txSender, txSenderName, eventName, resultName } = transaction;
+    const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || txSenderName || shortenText(txSender, 6);
 
     switch (txType) {
       case TransactionType.CREATE_EVENT: {
