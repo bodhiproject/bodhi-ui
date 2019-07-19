@@ -8,6 +8,7 @@ export default class ResultSet {
   block // Block info returned when confirmed
   eventAddress // Event contract address
   centralizedOracleAddress // Result setters address (only for eventRound 0)
+  centralizedOracleName // Result setters' name
   resultIndex // Result index that was set
   amount // Result set amount in decimals
   amountSatoshi // Result set amount in satoshi

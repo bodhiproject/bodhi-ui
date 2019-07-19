@@ -5,8 +5,8 @@ import { injectIntl, intlShape, defineMessages, FormattedHTMLMessage } from 'rea
 import { withStyles, Grid, CardContent, Card, Typography } from '@material-ui/core';
 import { Token, TransactionType } from 'constants';
 import styles from './styles';
-import { getTimeString, toFixed, shortenText } from '../../../../helpers/utility';
-import { getStatusString } from '../../../../helpers/stringUtil';
+import { getTimeString, toFixed } from '../../../../helpers/utility';
+import { getStatusString, getAddressName } from '../../../../helpers/stringUtil';
 import { EXPLORER } from '../../../../network/routes';
 
 const messages = defineMessages({
@@ -44,8 +44,8 @@ export default class TxRow extends Component {
   };
 
   renderCardString = (transaction, intl, account) => {
-    const { txType, amount, txSender, eventName, resultName } = transaction;
-    const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || shortenText(txSender, 6);
+    const { txType, amount, txSender, txSenderName, eventName, resultName } = transaction;
+    const who = getAddressName(account, intl, txSender, txSenderName);
 
     switch (txType) {
       case TransactionType.CREATE_EVENT: {

@@ -12,6 +12,7 @@ export default class MultipleResultsEvent {
   block // Block info returned when event confirmed
   address // Contract address returned when confirmed
   ownerAddress // Owner of the event
+  ownerName // Owner's name
   version // Current version of the contract
   name // Name
   results // Results

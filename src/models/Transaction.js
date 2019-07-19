@@ -14,6 +14,7 @@ export default class Transaction {
   eventAddress // Address of the event
   amount // Amount of this transaction
   txSender // Sender of this transaction
+  txSenderName // Name of the sender
   resultName
 
   constructor(transaction) {
@@ -22,16 +23,20 @@ export default class Transaction {
       this.eventAddress = transaction.address;
       this.amount = transaction.escrowAmount;
       this.txSender = transaction.ownerAddress;
+      this.txSenderName = transaction.ownerName;
       this.eventName = transaction.name;
     } else if (this.txType === TransactionType.BET
       || this.txType === TransactionType.VOTE) {
       this.txSender = transaction.betterAddress;
+      this.txSenderName = transaction.betterName;
     } else if (this.txType === TransactionType.RESULT_SET) {
       this.txSender = transaction.centralizedOracleAddress;
+      this.txSenderName = transaction.centralizedOracleName;
     } else {
       this.amount = stringToBN(transaction.winningAmount).add(stringToBN(transaction.escrowWithdrawAmount));
       this.amount = this.amount.toString();
       this.txSender = transaction.winnerAddress;
+      this.txSenderName = transaction.winnerName;
     }
     if (isNumber(this.amount)) {
       // Remove this line when Apollo libaray fixed

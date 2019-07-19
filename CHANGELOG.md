@@ -3,6 +3,7 @@
 ## Current
 
 - [#1549] - Add Pull Request template and add CHANGELOG.md
+- [#1551] - Add Address Name Service
 
 ## 2.3.0
 

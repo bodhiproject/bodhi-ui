@@ -7,10 +7,10 @@ import { Token, Routes } from 'constants';
 import { SeeAllButton } from 'components';
 import styles from './styles';
 import { CenteredDiv } from '../TransactionHistory';
-import { getTimeString, toFixed, shortenText } from '../../../../helpers';
+import { getTimeString, toFixed } from '../../../../helpers';
 import { EXPLORER } from '../../../../network/routes';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
-import { getStatusString } from '../../../../helpers/stringUtil';
+import { getStatusString, getAddressName } from '../../../../helpers/stringUtil';
 
 const messages = defineMessages({
   strDetailMsg: {
@@ -51,10 +51,10 @@ export default class EventResultHistory extends Component {
 
   renderCardString = (resultSet, intl) => {
     const { store: { naka: { account } } } = this.props;
-    const { eventRound, txSender, resultName } = resultSet;
+    const { eventRound, txSender, resultName, centralizedOracleName } = resultSet;
 
     if (eventRound === 0) {
-      const who = (account && account.toLowerCase() === txSender && intl.formatMessage(messages.strYou)) || shortenText(txSender, 6);
+      const who = getAddressName(account, intl, txSender, centralizedOracleName);
       return (
         <Fragment>
           <FormattedHTMLMessage
